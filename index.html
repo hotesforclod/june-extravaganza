@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>June Extravaganza 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 :root {
   --gold: #D4A843;
@@ -26,512 +27,168 @@
   --border: #E5E7EB;
   --text: #111827;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--navy);
-  color: var(--text);
-  min-height: 100vh;
-}
+.app-header { background: var(--navy); padding: 2rem 1.5rem 0; text-align: center; position: relative; overflow: hidden; }
+.app-header::before { content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%); width: 400px; height: 400px; background: radial-gradient(circle, rgba(212,168,67,0.15) 0%, transparent 70%); pointer-events: none; }
+.header-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.header-title { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 8px; }
+.header-sub { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 16px; }
+.header-pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; padding-bottom: 1.5rem; }
+.pill { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+.pill-wc { background: rgba(26,107,60,0.3); color: #6EE7A8; border: 1px solid rgba(110,231,168,0.3); }
+.pill-bway { background: rgba(83,74,183,0.3); color: #B8B4F0; border: 1px solid rgba(184,180,240,0.3); }
+.pill-fam { background: rgba(212,88,10,0.3); color: #FDB98A; border: 1px solid rgba(253,185,138,0.3); }
 
-/* ---- HEADER ---- */
-.app-header {
-  background: var(--navy);
-  padding: 2rem 1.5rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.app-header::before {
-  content: '';
-  position: absolute;
-  top: -60px; left: 50%; transform: translateX(-50%);
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(212,168,67,0.15) 0%, transparent 70%);
-  pointer-events: none;
-}
-.header-eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 10px;
-}
-.header-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.6rem;
-  font-weight: 900;
-  color: var(--white);
-  line-height: 1.05;
-  margin-bottom: 8px;
-}
-.header-sub {
-  font-size: 14px;
-  color: rgba(255,255,255,0.55);
-  margin-bottom: 1.5rem;
-  font-weight: 300;
-  letter-spacing: 0.5px;
-}
-.header-pills {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
-}
-.pill {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 5px 14px;
-  border-radius: 999px;
-  border: 1px solid;
-}
-.pill-wc { color: var(--gold); border-color: rgba(212,168,67,0.4); background: rgba(212,168,67,0.1); }
-.pill-bway { color: #A78BFA; border-color: rgba(167,139,250,0.4); background: rgba(167,139,250,0.1); }
-.pill-fam { color: #6EE7B7; border-color: rgba(110,231,183,0.4); background: rgba(110,231,183,0.1); }
-
-/* ---- NAV TABS ---- */
-.nav-tabs {
-  display: flex;
-  background: var(--navy);
-  padding: 0 1rem 0;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
+.nav-tabs { display: flex; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .nav-tabs::-webkit-scrollbar { display: none; }
-.tab-btn {
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  color: rgba(255,255,255,0.45);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 12px 16px;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.tab-btn:hover { color: rgba(255,255,255,0.8); }
-.tab-btn.active {
-  color: var(--gold);
-  border-bottom-color: var(--gold);
-}
+.tab-btn { flex-shrink: 0; padding: 12px 16px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.5); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
 
-/* ---- MAIN CONTENT ---- */
-.app-body {
-  background: var(--white);
-  min-height: calc(100vh - 200px);
-  border-radius: 20px 20px 0 0;
-}
-
-.tab-panel { display: none; padding: 1.5rem; }
+.app-body { background: var(--white); min-height: calc(100vh - 200px); }
+.tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
-/* ---- SCHEDULE VIEW ---- */
-.day-cards { display: flex; flex-direction: column; gap: 12px; }
-
-.day-card {
-  background: var(--surface);
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-.day-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 16px;
-  cursor: pointer;
-  user-select: none;
-}
-.day-card-header:hover { background: #F9FAFB; }
+/* SCHEDULE */
+.day-cards { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.day-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.day-card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; }
 .day-left { display: flex; align-items: center; gap: 12px; }
-.day-date-box {
-  width: 44px; height: 44px;
-  border-radius: 10px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  background: var(--navy);
-  flex-shrink: 0;
-}
-.day-date-num { font-size: 18px; font-weight: 700; color: var(--white); line-height: 1; }
-.day-date-dow { font-size: 9px; font-weight: 600; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
+.day-date-box { background: var(--navy); color: white; border-radius: 8px; width: 44px; height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+.day-date-num { font-size: 18px; font-weight: 700; line-height: 1; }
+.day-date-dow { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
 .day-info { flex: 1; }
 .day-title { font-size: 15px; font-weight: 600; color: var(--text); }
-.day-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.day-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
-.badge {
-  font-size: 10px; font-weight: 600;
-  padding: 2px 8px; border-radius: 999px;
-  letter-spacing: 0.5px;
-}
-.badge-match { background: #FEF9C3; color: #854D0E; }
-.badge-event { background: var(--sky-light); color: var(--sky); }
-.badge-kids { background: var(--orange-light); color: var(--orange); }
-.badge-open { background: #F3F4F6; color: var(--muted); }
-.badge-general { background: #F3F4F6; color: #6B7280; }
-.chevron { color: var(--muted); font-size: 18px; transition: transform 0.2s; }
-.day-card.open .chevron { transform: rotate(180deg); }
-
-.day-body { display: none; border-top: 1px solid var(--border); }
+.day-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+.badge-match { background: var(--green-light); color: var(--green); }
+.badge-show { background: #EDE9FE; color: #5B21B6; }
+.badge-event { background: var(--orange-light); color: var(--orange); }
+.badge-travel { background: var(--sky-light); color: var(--sky); }
+.chevron { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
+.day-card.open .chevron { transform: rotate(90deg); }
+.day-body { display: none; border-top: 1px solid var(--border); padding: 12px 16px; }
 .day-card.open .day-body { display: block; }
+.time-block { display: flex; gap: 12px; margin-bottom: 12px; }
+.time-block:last-child { margin-bottom: 0; }
+.time-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); width: 56px; flex-shrink: 0; padding-top: 2px; }
+.time-content-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.time-content-desc { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
 
-.time-block {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex; gap: 12px;
-}
-.time-block:last-child { border-bottom: none; }
-.time-label {
-  font-size: 11px; font-weight: 600; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 1px;
-  width: 58px; flex-shrink: 0; padding-top: 2px;
-}
-.time-content { flex: 1; }
-.time-content-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-.time-content-loc {
-  font-size: 12px; color: var(--green);
-  display: flex; align-items: center; gap: 4px; margin-bottom: 4px;
-}
-.time-content-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-.time-block-match { background: #FFFBEB; border-left: 3px solid var(--gold); }
-.time-block-event { background: var(--sky-light); border-left: 3px solid var(--sky); }
-.time-block-kids { background: var(--orange-light); border-left: 3px solid var(--orange); }
+/* MATCHES */
+.matches-wrap { padding: 16px; }
+.match-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; cursor: pointer; }
+.match-card-inner { padding: 16px; }
+.match-meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+.match-teams { display: flex; align-items: center; gap: 10px; }
+.match-team { flex: 1; text-align: center; }
+.match-flag { font-size: 28px; display: block; }
+.match-name { font-size: 12px; font-weight: 600; margin-top: 4px; }
+.match-vs { font-size: 11px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+.match-details { margin-top: 12px; font-size: 12px; color: var(--muted); display: flex; gap: 16px; }
+.attending-badge { display: inline-block; background: var(--green-light); color: var(--green); font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 8px; }
 
-/* ---- SCHEDULE VIEW TOGGLE ---- */
-.schedule-toolbar {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 1rem;
-}
-.schedule-toolbar-label {
-  font-size: 13px; color: var(--muted); font-weight: 500;
-}
-.view-toggle {
-  display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
-}
-.view-toggle-btn {
-  background: none; border: none; padding: 6px 12px;
-  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
-  color: var(--muted); cursor: pointer; transition: all 0.15s;
-  display: flex; align-items: center; gap: 5px;
-}
-.view-toggle-btn:first-child { border-right: 1px solid var(--border); }
-.view-toggle-btn.active { background: var(--navy); color: white; }
+/* BROADWAY */
+.broadway-wrap { padding: 16px; }
+.show-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; padding: 16px; }
+.show-title { font-size: 16px; font-weight: 700; color: var(--text); }
+.show-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.show-rows { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.show-row { display: flex; gap: 8px; font-size: 13px; }
+.show-row-icon { width: 20px; flex-shrink: 0; }
+.show-row-label { color: var(--muted); width: 70px; flex-shrink: 0; }
+.show-row-value { color: var(--text); font-weight: 500; }
 
-/* ---- GRID VIEW ---- */
-#grid-view { display: none; }
-#grid-view.active { display: block; }
-#list-view { display: block; }
-#list-view.active { display: block; }
-#list-view.hidden { display: none; }
+/* EXPLORE */
+.explore-wrap { padding: 16px; }
+.explore-section { margin-bottom: 20px; }
+.explore-section-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 10px; }
+.explore-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; }
+.explore-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.explore-desc { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
 
-.week-grid-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; border: 1px solid var(--border); }
-.week-grid {
-  border-collapse: collapse;
-  width: 100%;
-  min-width: 680px;
-  font-size: 12px;
-}
-.week-grid th {
-  background: var(--navy); color: white;
-  padding: 10px 8px; text-align: center;
-  font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
-  border-right: 1px solid rgba(255,255,255,0.1);
-}
-.week-grid th:first-child { width: 62px; background: #0A1629; }
-.week-grid th .th-day { font-size: 18px; font-weight: 700; line-height: 1; }
-.week-grid th .th-dow { font-size: 9px; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
-.week-grid td {
-  vertical-align: top; padding: 0;
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.week-grid td:first-child {
-  background: #F9FAFB; text-align: center;
-  font-size: 10px; font-weight: 700; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 1px;
-  padding: 8px 4px; width: 62px;
-}
-.week-grid tr:last-child td { border-bottom: none; }
-.week-grid td:last-child { border-right: none; }
+/* MAP */
+.map-wrap { padding: 16px; }
+.map-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.map-filter-btn { font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; transition: all 0.2s; }
+.map-filter-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+#leaflet-map { width: 100%; height: 400px; border-radius: 12px; border: 1px solid var(--border); }
 
-.grid-cell { padding: 6px 7px; min-height: 58px; height: 100%; }
-.grid-cell-empty { color: #CBD5E1; font-size: 10px; padding: 8px 7px; font-style: italic; }
+/* SQUAD */
+.squad-wrap { padding: 16px; }
+.squad-section-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin: 16px 0 8px; }
+.squad-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; cursor: pointer; }
+.squad-event { font-size: 14px; font-weight: 600; color: var(--text); }
+.squad-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.kids-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.kids-person { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: var(--sky-light); color: var(--sky); }
+.kids-person.chaperone { background: var(--orange-light); color: var(--orange); }
 
-.gc-item {
-  border-radius: 6px; padding: 5px 6px; margin-bottom: 4px;
-  font-size: 11px; line-height: 1.3;
-}
-.gc-item:last-child { margin-bottom: 0; }
-.gc-title { font-weight: 600; color: var(--text); }
-.gc-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
-.gc-time { font-size: 10px; font-weight: 700; margin-bottom: 2px; }
+/* DRAWER */
+.drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+.drawer { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-radius: 20px 20px 0 0; z-index: 101; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.32,0.72,0,1); max-height: 85vh; overflow-y: auto; }
+.drawer.open { transform: translateY(0); }
+.drawer-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 0; }
+.drawer-header { padding: 16px 20px 12px; border-bottom: 1px solid var(--border); }
+.drawer-date { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.drawer-title { font-size: 20px; font-weight: 700; color: var(--text); }
+.drawer-badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-top: 6px; }
+.drawer-badge-match { background: var(--green-light); color: var(--green); }
+.drawer-badge-show { background: #EDE9FE; color: #5B21B6; }
+.drawer-badge-event { background: var(--orange-light); color: var(--orange); }
+.drawer-rows { padding: 12px 20px 32px; }
+.drawer-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.drawer-row:last-child { border-bottom: none; }
+.drawer-row-icon { font-size: 18px; width: 24px; flex-shrink: 0; }
+.drawer-row-content { flex: 1; }
+.drawer-row-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.drawer-row-value { font-size: 14px; font-weight: 500; color: var(--text); margin-top: 2px; line-height: 1.5; }
 
-.gc-match { background: #FEF9C3; border-left: 2px solid var(--gold); }
-.gc-match .gc-title { color: #854D0E; }
-.gc-match .gc-time { color: var(--gold-dark); }
+/* ===== PICK YOUR NATION TAB ===== */
+.nation-header { background: var(--navy); padding: 16px; text-align: center; }
+.nation-header-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--white); }
+.nation-header-sub { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 4px; }
 
-.gc-event { background: var(--sky-light); border-left: 2px solid var(--sky); }
-.gc-event .gc-title { color: #1E40AF; }
-.gc-event .gc-time { color: var(--sky); }
+.nation-search-wrap { padding: 12px 16px 8px; background: var(--white); position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border); }
+.nation-search { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 14px; font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--text); outline: none; }
+.nation-search:focus { border-color: var(--navy); }
 
-.gc-kids { background: var(--orange-light); border-left: 2px solid var(--orange); }
-.gc-kids .gc-title { color: #9A3412; }
+.region-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); padding: 14px 16px 6px; }
 
-.gc-neutral { background: #F3F4F6; border-left: 2px solid #D1D5DB; }
-.gc-neutral .gc-title { color: var(--text); }
+.nation-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 16px 16px; }
 
-/* ---- CELL POPOVER ---- */
-.gc-item { cursor: pointer; }
-.gc-item:hover { filter: brightness(0.96); }
+.nation-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 8px 10px; text-align: center; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; position: relative; overflow: hidden; }
+.nation-card:active { transform: scale(0.96); }
+.nation-card.heritage { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-light), 0 2px 8px rgba(212,168,67,0.2); }
+.heritage-ribbon { position: absolute; top: 0; right: 0; background: var(--gold); color: white; font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 0 10px 0 6px; letter-spacing: 0.5px; text-transform: uppercase; }
+.nation-flag-img { width: 52px; height: 34px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 6px; border: 0.5px solid rgba(0,0,0,0.08); }
+.nation-flag-emoji-fallback { font-size: 32px; line-height: 1; display: block; margin-bottom: 6px; }
+.nation-name { font-size: 11px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.nation-region-tag { font-size: 9px; color: var(--muted); margin-top: 2px; }
 
-.cell-drawer-overlay {
-  display: none;
-  position: fixed; inset: 0; z-index: 100;
-  background: rgba(15,31,61,0.45);
-  align-items: flex-end;
-  justify-content: center;
-}
-.cell-drawer-overlay.open { display: flex; }
+/* NATION DRAWER */
+.nation-drawer-flag-img { width: 100%; height: 140px; object-fit: cover; }
+.nation-drawer-flag-fallback { width: 100%; height: 140px; display: flex; align-items: center; justify-content: center; font-size: 72px; background: linear-gradient(135deg, #f5f5f5, #e8e8e8); }
+.nation-drawer-name { font-size: 22px; font-weight: 700; color: var(--text); }
+.nation-drawer-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.nation-heritage-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--gold-light); color: var(--gold-dark); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-top: 6px; border: 1px solid var(--gold); }
+.nation-drawer-fact { background: var(--navy); color: white; padding: 14px 20px; margin: 0; font-size: 14px; line-height: 1.6; }
+.nation-drawer-fact-emoji { font-size: 22px; display: block; margin-bottom: 4px; }
+.nation-info-rows { padding: 4px 20px 32px; }
+.nation-info-row { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.nation-info-row:last-child { border-bottom: none; }
+.nation-info-icon { font-size: 18px; width: 26px; flex-shrink: 0; }
+.nation-info-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.nation-info-value { font-size: 14px; font-weight: 500; color: var(--text); margin-top: 2px; line-height: 1.5; }
+.nation-deep-dive { background: var(--sky-light); border-left: 3px solid var(--sky); margin: 0 20px 8px; padding: 10px 12px; border-radius: 0 8px 8px 0; font-size: 13px; color: #1a3a5c; line-height: 1.6; }
+.nation-deep-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--sky); margin-bottom: 4px; }
 
-.cell-drawer {
-  background: var(--surface);
-  border-radius: 20px 20px 0 0;
-  width: 100%; max-width: 560px;
-  padding: 0 0 32px;
-  max-height: 80vh;
-  overflow-y: auto;
-  transform: translateY(100%);
-  transition: transform 0.25s cubic-bezier(0.32,0.72,0,1);
-}
-.cell-drawer-overlay.open .cell-drawer { transform: translateY(0); }
-
-.drawer-handle {
-  display: flex; justify-content: center; padding: 12px 0 8px;
-}
-.drawer-handle-bar {
-  width: 36px; height: 4px; border-radius: 2px;
-  background: var(--border);
-}
-.drawer-header {
-  padding: 4px 20px 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
-}
-.drawer-header-left { flex: 1; }
-.drawer-date { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-.drawer-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); line-height: 1.2; }
-.drawer-close {
-  background: #F3F4F6; border: none; border-radius: 50%;
-  width: 30px; height: 30px; font-size: 18px; color: var(--muted);
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; margin-top: 2px; line-height: 1;
-}
-.drawer-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
-.drawer-row { display: flex; gap: 12px; align-items: flex-start; }
-.drawer-row-icon { font-size: 16px; width: 24px; flex-shrink: 0; margin-top: 1px; }
-.drawer-row-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-.drawer-row-value { font-size: 14px; color: var(--text); line-height: 1.5; }
-.drawer-row-value a { color: var(--sky); text-decoration: none; font-weight: 600; }
-.drawer-badge {
-  display: inline-block; font-size: 11px; font-weight: 600;
-  padding: 3px 10px; border-radius: 999px; margin-top: 6px;
-}
-.drawer-badge-match { background: #FEF9C3; color: #854D0E; }
-.drawer-badge-event { background: var(--sky-light); color: var(--sky); }
-.drawer-badge-kids { background: var(--orange-light); color: var(--orange); }
-
-/* ---- MATCH CARDS VIEW ---- */
-.match-list { display: flex; flex-direction: column; gap: 16px; }
-
-.match-hero {
-  background: var(--surface);
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-.match-hero-header {
-  background: var(--navy);
-  padding: 14px 16px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.match-hero-date { font-size: 11px; color: var(--gold); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-.match-hero-venue { font-size: 11px; color: rgba(255,255,255,0.5); }
-
-.teams-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 16px;
-  gap: 8px;
-}
-.team-block { flex: 1; text-align: center; }
-.team-flag { font-size: 40px; line-height: 1; margin-bottom: 6px; }
-.team-name { font-size: 15px; font-weight: 700; color: var(--text); }
-.team-rank { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.team-stars { font-size: 11px; color: var(--sky); margin-top: 4px; line-height: 1.4; }
-.vs-box {
-  display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
-}
-.vs-text { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: var(--navy); }
-.kickoff-time { font-size: 11px; color: var(--gold); font-weight: 600; margin-top: 4px; }
-
-.match-logistics {
-  background: #F9FAFB; border-top: 1px solid var(--border);
-  padding: 14px 16px; display: flex; gap: 20px; flex-wrap: wrap;
-}
-.logistics-item { display: flex; flex-direction: column; gap: 2px; }
-.logistics-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-.logistics-value { font-size: 13px; font-weight: 600; color: var(--text); }
-
-.attending-row {
-  padding: 14px 16px; border-top: 1px solid var(--border);
-}
-.attending-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-.attending-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.attending-chip {
-  background: var(--navy); color: var(--white);
-  font-size: 11px; font-weight: 500;
-  padding: 4px 10px; border-radius: 999px;
-}
-.match-preview-link {
-  display: block; padding: 12px 16px; border-top: 1px solid var(--border);
-  color: var(--sky); font-size: 13px; font-weight: 600; text-decoration: none;
-  text-align: center;
-}
-.match-preview-link:hover { background: var(--sky-light); }
-
-/* ---- KIDS CARD ---- */
-.kids-event-card {
-  background: var(--surface);
-  border-radius: 16px;
-  border: 2px solid var(--orange);
-  overflow: hidden;
-  margin-bottom: 16px;
-}
-.kids-event-header {
-  background: var(--orange);
-  padding: 14px 16px;
-  color: white;
-}
-.kids-event-title { font-size: 16px; font-weight: 700; }
-.kids-event-date { font-size: 12px; opacity: 0.85; margin-top: 2px; }
-.kids-event-body { padding: 16px; }
-.kids-section-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-.kids-people { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-.kids-person { font-size: 11px; padding: 3px 10px; border-radius: 999px; font-weight: 500; }
-.kids-person.kid { background: var(--orange-light); color: var(--orange); }
-.kids-person.chaperone { background: #F3F4F6; color: var(--muted); }
-.options-list { display: flex; flex-direction: column; gap: 10px; }
-.option-item {
-  border: 1px solid var(--border); border-radius: 10px; padding: 12px;
-}
-.option-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-.option-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-/* ---- EXPLORE VIEW ---- */
-.explore-section { margin-bottom: 24px; }
-.section-heading {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px; font-weight: 700;
-  color: var(--navy); margin-bottom: 4px;
-}
-.section-sub { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
-.explore-grid { display: flex; flex-direction: column; gap: 10px; }
-.explore-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; padding: 14px 16px;
-  display: flex; align-items: flex-start; gap: 12px;
-}
-.explore-icon {
-  width: 40px; height: 40px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; flex-shrink: 0;
-}
-.explore-card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-.explore-card-tag { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-.explore-card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-.explore-card a { color: var(--sky); text-decoration: none; font-size: 12px; font-weight: 600; }
-
-/* ---- MAP VIEW ---- */
-#panel-map { padding: 0; }
-.map-controls {
-  padding: 1rem 1.5rem;
-  display: flex; gap: 8px; flex-wrap: wrap;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-.map-filter-btn {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px; font-weight: 600;
-  padding: 6px 14px; border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--surface); color: var(--muted);
-  cursor: pointer; transition: all 0.15s;
-}
-.map-filter-btn.active, .map-filter-btn:hover {
-  background: var(--navy); color: white; border-color: var(--navy);
-}
-#leaflet-map { width: 100%; height: 460px; }
-.map-legend {
-  padding: 1rem 1.5rem;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-}
-.legend-title { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-.legend-items { display: flex; flex-direction: column; gap: 8px; }
-.legend-item { display: flex; align-items: flex-start; gap: 10px; }
-.legend-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; }
-.legend-text { font-size: 13px; color: var(--text); }
-.legend-sub { font-size: 11px; color: var(--muted); }
-
-/* ---- BROADWAY SECTION ---- */
-.broadway-card {
-  background: linear-gradient(135deg, #1a0533 0%, #2d1b4e 100%);
-  border-radius: 16px; padding: 20px;
-  color: white; margin-bottom: 16px;
-  position: relative; overflow: hidden;
-}
-.broadway-card::before {
-  content: '✦';
-  position: absolute; top: -20px; right: -10px;
-  font-size: 120px; opacity: 0.05;
-}
-.broadway-eyebrow { font-size: 10px; color: #C084FC; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
-.broadway-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.broadway-subtitle { font-size: 13px; opacity: 0.7; }
-.broadway-details { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
-.broadway-row { display: flex; justify-content: space-between; align-items: center; }
-.broadway-row-label { font-size: 11px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
-.broadway-row-value { font-size: 13px; font-weight: 600; }
-
-/* ---- DIVIDER ---- */
-.divider { height: 1px; background: var(--border); margin: 20px 0; }
-
-/* ---- BOTTOM SAFE AREA ---- */
 .safe-bottom { height: 32px; }
-.fine-print {
-  text-align: center;
-  font-size: 11px;
-  color: var(--muted);
-  font-style: italic;
-  padding: 0 1.5rem 1rem;
-  line-height: 1.6;
-  opacity: 0.6;
-}
-
-/* ---- RESPONSIVE ---- */
 @media (max-width: 400px) {
   .header-title { font-size: 2rem; }
-  .teams-row { padding: 14px 10px; }
-  .team-flag { font-size: 32px; }
+  .nation-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
 }
 </style>
 </head>
@@ -551,1015 +208,342 @@ body {
 <nav class="nav-tabs">
   <button class="tab-btn active" onclick="switchTab('schedule')">Schedule</button>
   <button class="tab-btn" onclick="switchTab('matches')">Matches</button>
-  <button class="tab-btn" onclick="switchTab('squad')">The Squad</button>
   <button class="tab-btn" onclick="switchTab('broadway')">Broadway</button>
   <button class="tab-btn" onclick="switchTab('explore')">Explore NYC</button>
   <button class="tab-btn" onclick="switchTab('map')">Map</button>
+  <button class="tab-btn" onclick="switchTab('nations')">🌍 Pick Your Nation</button>
 </nav>
 
 <div class="app-body">
 
-<!-- ===== SCHEDULE TAB ===== -->
+<!-- SCHEDULE TAB -->
 <div id="panel-schedule" class="tab-panel active">
-
-  <div class="schedule-toolbar">
-    <span class="schedule-toolbar-label">June 20 – 27</span>
-    <div class="view-toggle">
-      <button class="view-toggle-btn" id="btn-list" onclick="setScheduleView('list')">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="2" width="8" height="1.5" rx="0.75" fill="currentColor"/><rect x="4" y="6" width="8" height="1.5" rx="0.75" fill="currentColor"/><rect x="4" y="10" width="8" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="2" width="1.5" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="6" width="1.5" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="10" width="1.5" height="1.5" rx="0.75" fill="currentColor"/></svg>
-        List
-      </button>
-      <button class="view-toggle-btn active" id="btn-grid" onclick="setScheduleView('grid')">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="7.5" y="1" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="1" y="7.5" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="7.5" y="7.5" width="5.5" height="5.5" rx="1" fill="currentColor"/></svg>
-        Week
-      </button>
-    </div>
-  </div>
-
-  <!-- GRID VIEW -->
-  <div id="grid-view" class="active">
-    <div class="week-grid-wrap">
-    <table class="week-grid">
-      <thead>
-        <tr>
-          <th></th>
-          <th><div class="th-day">20</div><div class="th-dow">Sat</div></th>
-          <th><div class="th-day">21</div><div class="th-dow">Sun</div></th>
-          <th><div class="th-day">22</div><div class="th-dow">Mon</div></th>
-          <th><div class="th-day">23</div><div class="th-dow">Tue</div></th>
-          <th><div class="th-day">24</div><div class="th-dow">Wed</div></th>
-          <th><div class="th-day">25</div><div class="th-dow">Thu</div></th>
-          <th><div class="th-day">26</div><div class="th-dow">Fri</div></th>
-          <th><div class="th-day">27</div><div class="th-dow">Sat</div></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Morning</td>
-          <td><div class="grid-cell"><div class="gc-item gc-neutral" onclick="openDrawer('sat20-morning')"><div class="gc-title">Arrivals</div><div class="gc-sub">Check-in & bag drop</div></div></div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-kids" onclick="openDrawer('sun21-morning')"><div class="gc-title">Squad Norse: Rockefeller</div><div class="gc-sub">Waffles · FAO Schwarz · Skating · WC Store</div></div></div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-event" onclick="openDrawer('mon22-morning')"><div class="gc-title">Lions of Teranga</div><div class="gc-sub">Little Senegal, Harlem</div></div></div></td>
-          <td><div class="grid-cell-empty">Open</div></td>
-          <td><div class="grid-cell-empty">Open</div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-event" onclick="openDrawer('thu25-morning')"><div class="gc-title">Ravilethe Bhakshanam</div><div class="gc-sub">Rashmi hosts breakfast</div></div></div></td>
-          <td><div class="grid-cell-empty">Open</div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-neutral" onclick="openDrawer('sat27-morning')"><div class="gc-title">Departures</div><div class="gc-sub">AM travel</div></div></div></td>
-        </tr>
-        <tr>
-          <td>Day</td>
-          <td><div class="grid-cell"><div class="gc-item gc-neutral" onclick="openDrawer('sat20-day')"><div class="gc-title">Orientation</div><div class="gc-sub">Explore neighborhood</div></div></div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-event" onclick="openDrawer('sun21-day')"><div class="gc-time">3:00 PM</div><div class="gc-title">Mario Takes on Times Square</div></div></div></td>
-          <td><div class="grid-cell-empty">Open</div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-event" onclick="openDrawer('tue23-day')"><div class="gc-time">3:00 PM</div><div class="gc-title">Behind the Scenes</div><div class="gc-sub">Once Upon a Dream</div></div></div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-event" onclick="openDrawer('wed24-day')"><div class="gc-title">German House of Soccer</div><div class="gc-sub">525 W 28th St</div></div></div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-match" onclick="openDrawer('thu25-day')"><div class="gc-time">Depart 1PM · KO 4PM</div><div class="gc-title">Ecuador vs Germany</div><div class="gc-sub">MetLife Stadium</div></div></div></td>
-          <td><div class="grid-cell-empty">Open</div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-match" onclick="openDrawer('sat27-day')"><div class="gc-time">Depart 2PM · KO 5PM</div><div class="gc-title">Panama vs England</div><div class="gc-sub">MetLife Stadium</div></div></div></td>
-        </tr>
-        <tr>
-          <td>Evening</td>
-          <td><div class="grid-cell"><div class="gc-item gc-neutral" onclick="openDrawer('sat20-eve')"><div class="gc-title">Welcome Dinner · NYC Pizza Night</div><div class="gc-sub">Command Center</div></div></div></td>
-          <td><div class="grid-cell">
-            <div class="gc-item gc-event" onclick="openDrawer('sun21-eve-open')"><div class="gc-time">6:00 PM</div><div class="gc-title">Opening Ceremonies</div><div class="gc-sub">Sky Castle</div></div>
-            <div class="gc-item gc-neutral" onclick="openDrawer('sun21-eve-dinner')"><div class="gc-time">7:30 PM</div><div class="gc-title">Dinner & Games</div><div class="gc-sub">MClub</div></div>
-          </div></td>
-          <td><div class="grid-cell">
-            <div class="gc-item gc-match" onclick="openDrawer('mon22-eve-match')"><div class="gc-time">Depart 5PM · KO 8PM</div><div class="gc-title">Norway vs Senegal</div><div class="gc-sub">MetLife Stadium</div></div>
-            <div class="gc-item gc-kids" onclick="openDrawer('mon22-eve-kids')"><div class="gc-title">Kids Movie Night</div><div class="gc-sub">Choose venue</div></div>
-          </div></td>
-          <td><div class="grid-cell">
-            <div class="gc-item gc-event" onclick="openDrawer('tue23-eve-show')"><div class="gc-time">6:15 PM</div><div class="gc-title">Once Upon a Dream</div><div class="gc-sub">Steven Schwartz Theatre</div></div>
-            <div class="gc-item gc-neutral" onclick="openDrawer('tue23-eve-dinner')"><div class="gc-time">8:00 PM</div><div class="gc-title">Curtain Call Dinner</div></div>
-          </div></td>
-          <td><div class="grid-cell">
-            <div class="gc-item gc-event" onclick="openDrawer('wed24-eve')"><div class="gc-title">Quintessential NY Nite</div><div class="gc-sub">Central Park → Dinner → Don't Tell Mama → Top of the Rock</div></div>
-          </div></td>
-          <td><div class="grid-cell-empty">Open</div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-event" onclick="openDrawer('fri26-eve')"><div class="gc-title">Closing Ceremonies</div><div class="gc-sub">AirBnB Command Center</div></div></div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-neutral" onclick="openDrawer('sat27-eve')"><div class="gc-title">Departures</div><div class="gc-sub">PM travel</div></div></div></td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-      <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);"><span style="width:10px;height:10px;border-radius:2px;background:#FEF9C3;border-left:2px solid var(--gold);display:inline-block;"></span>Match</span>
-      <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);"><span style="width:10px;height:10px;border-radius:2px;background:var(--sky-light);border-left:2px solid var(--sky);display:inline-block;"></span>Event</span>
-      <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);"><span style="width:10px;height:10px;border-radius:2px;background:var(--orange-light);border-left:2px solid var(--orange);display:inline-block;"></span>Kids</span>
-      <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);"><span style="width:10px;height:10px;border-radius:2px;background:#F3F4F6;border-left:2px solid #D1D5DB;display:inline-block;"></span>General</span>
-    </div>
-  </div>
-
-  <!-- LIST VIEW -->
-  <div id="list-view" class="hidden">
   <div class="day-cards">
-
-    <!-- SAT JUN 20 -->
     <div class="day-card" onclick="toggleDay(this)">
       <div class="day-card-header">
         <div class="day-left">
           <div class="day-date-box"><div class="day-date-num">20</div><div class="day-date-dow">Sat</div></div>
-          <div class="day-info">
-            <div class="day-title">Arrivals & Welcome</div>
-            <div class="day-badges"><span class="badge badge-general">Welcome Dinner</span></div>
-          </div>
-        </div>
-        <div class="chevron">›</div>
+          <div class="day-info"><div class="day-title">Arrivals & Welcome</div><div class="day-badges"><span class="badge badge-event">Welcome Dinner</span></div></div>
+        </div><div class="chevron">›</div>
       </div>
       <div class="day-body">
-        <div class="time-block">
-          <div class="time-label">Morning</div>
-          <div class="time-content">
-            <div class="time-content-title">Arrivals</div>
-            <div class="time-content-desc">Check-in & bag drop. Explore the neighborhood.</div>
-            <div class="time-content-loc" style="margin-top:6px;">🏠 Sky Castle · 460 W 42nd St #58B</div>
-            <div class="time-content-loc">🏨 Ramada by Wyndham · 343 W 44th St</div>
-            <div class="time-content-loc">🏢 Command Center · 42 E 38th St</div>
-          </div>
-        </div>
-        <div class="time-block">
-          <div class="time-label">Evening</div>
-          <div class="time-content">
-            <div class="time-content-title">Welcome Dinner · NYC Pizza Night</div>
-            <div class="time-content-loc">📍 Command Center · 42 E 38th St</div>
-            <div class="time-content-desc">First meal together. Everyone gets a slice.</div>
-          </div>
-        </div>
+        <div class="time-block"><div class="time-label">Morning</div><div class="time-content"><div class="time-content-title">Arrivals</div><div class="time-content-desc">Check-in & bag drop. Explore the neighborhood.</div></div></div>
+        <div class="time-block"><div class="time-label">Evening</div><div class="time-content"><div class="time-content-title">Welcome Dinner — NYC Pizza Night</div><div class="time-content-desc">First meal together. Sky Castle HQ.</div></div></div>
       </div>
     </div>
-
-    <!-- SUN JUN 21 -->
     <div class="day-card" onclick="toggleDay(this)">
       <div class="day-card-header">
         <div class="day-left">
           <div class="day-date-box"><div class="day-date-num">21</div><div class="day-date-dow">Sun</div></div>
-          <div class="day-info">
-            <div class="day-title">Squad Norse: Rockefeller + Opening Night</div>
-            <div class="day-badges"><span class="badge badge-kids">⭐ Squad Norse</span><span class="badge badge-event">Times Square</span><span class="badge badge-event">Sky Castle</span></div>
-          </div>
-        </div>
-        <div class="chevron">›</div>
+          <div class="day-info"><div class="day-title">Opening Ceremony</div><div class="day-badges"><span class="badge badge-event">Parade of Nations</span><span class="badge badge-event">Opening Ceremony</span></div></div>
+        </div><div class="chevron">›</div>
       </div>
       <div class="day-body">
-        <div class="time-block time-block-kids">
-          <div class="time-label">Morning</div>
-          <div class="time-content">
-            <div class="time-content-title">Squad Norse: Rockefeller</div>
-            <div class="time-content-desc">FAO Schwarz → Roller Skating at The Rink → FIFA World Cup Store → Waffles at Scandinavia House</div>
-          </div>
-        </div>
-        <div class="time-block time-block-event">
-          <div class="time-label">3:00 PM</div>
-          <div class="time-content">
-            <div class="time-content-title">Mario Takes on Times Square</div>
-            <div class="time-content-loc">📍 Times Square</div>
-          </div>
-        </div>
-        <div class="time-block time-block-event">
-          <div class="time-label">6:00 PM</div>
-          <div class="time-content">
-            <div class="time-content-title">Opening Ceremonies</div>
-            <div class="time-content-loc">📍 Sky Castle · 460 W 42nd St #58B</div>
-          </div>
-        </div>
-        <div class="time-block">
-          <div class="time-label">7:30 PM</div>
-          <div class="time-content">
-            <div class="time-content-title">Dinner, Cocktails & Games</div>
-            <div class="time-content-loc">📍 MClub</div>
-          </div>
-        </div>
+        <div class="time-block"><div class="time-label">Morning</div><div class="time-content"><div class="time-content-title">Parade of Nations</div><div class="time-content-desc">Youngest generation represents their chosen countries. Costumes, flags, celebrations.</div></div></div>
+        <div class="time-block"><div class="time-label">Afternoon</div><div class="time-content"><div class="time-content-title">Opening Ceremony</div><div class="time-content-desc">Official June Extravaganza 2026 kickoff.</div></div></div>
       </div>
     </div>
-
-    <!-- MON JUN 22 -->
     <div class="day-card" onclick="toggleDay(this)">
       <div class="day-card-header">
         <div class="day-left">
           <div class="day-date-box"><div class="day-date-num">22</div><div class="day-date-dow">Mon</div></div>
-          <div class="day-info">
-            <div class="day-title">Match Night + Kids Movie</div>
-            <div class="day-badges"><span class="badge badge-match">⚽ Norway vs Senegal</span><span class="badge badge-kids">Kids Event</span></div>
-          </div>
-        </div>
-        <div class="chevron">›</div>
+          <div class="day-info"><div class="day-title">Ecuador vs Germany</div><div class="day-badges"><span class="badge badge-match">⚽ Match Day</span></div></div>
+        </div><div class="chevron">›</div>
       </div>
       <div class="day-body">
-        <div class="time-block time-block-event">
-          <div class="time-label">Morning</div>
-          <div class="time-content">
-            <div class="time-content-title">Lions of Teranga at Little Senegal</div>
-            <div class="time-content-loc">📍 Harlem</div>
-            <div class="time-content-desc">Explore West African culture ahead of the match.</div>
-          </div>
-        </div>
-        <div class="time-block time-block-match">
-          <div class="time-label">5:00 PM</div>
-          <div class="time-content">
-            <div class="time-content-title">Depart for MetLife Stadium</div>
-            <div class="time-content-desc">Kickoff: 8:00 PM · Norway vs Senegal</div>
-          </div>
-        </div>
-        <div class="time-block time-block-kids">
-          <div class="time-label">Evening</div>
-          <div class="time-content">
-            <div class="time-content-title">Kids Take Over the Movies</div>
-            <div class="time-content-desc">Parallel to the match. Kids pick their venue and movie.</div>
-          </div>
-        </div>
+        <div class="time-block"><div class="time-label">Afternoon</div><div class="time-content"><div class="time-content-title">Depart for MetLife</div><div class="time-content-desc">2:00 PM departure. Game at 5:00 PM.</div></div></div>
+        <div class="time-block"><div class="time-label">Evening</div><div class="time-content"><div class="time-content-title">Ecuador 🇪🇨 vs Germany 🇩🇪</div><div class="time-content-desc">MetLife Stadium · East Rutherford, NJ</div></div></div>
       </div>
     </div>
-
-    <!-- TUE JUN 23 -->
     <div class="day-card" onclick="toggleDay(this)">
       <div class="day-card-header">
         <div class="day-left">
           <div class="day-date-box"><div class="day-date-num">23</div><div class="day-date-dow">Tue</div></div>
-          <div class="day-info">
-            <div class="day-title">Broadway Night</div>
-            <div class="day-badges"><span class="badge badge-event">✦ Once Upon a Dream</span></div>
-          </div>
-        </div>
-        <div class="chevron">›</div>
+          <div class="day-info"><div class="day-title">Broadway & NYC</div><div class="day-badges"><span class="badge badge-show">✦ Broadway</span></div></div>
+        </div><div class="chevron">›</div>
       </div>
       <div class="day-body">
-        <div class="time-block time-block-event">
-          <div class="time-label">3:00 PM</div>
-          <div class="time-content">
-            <div class="time-content-title">Behind the Scenes — Once Upon a Dream</div>
-            <div class="time-content-loc">📍 Steven Schwartz Theatre</div>
-            <div class="time-content-desc">Meet the cast and mingle with backstage and production crew.</div>
-          </div>
-        </div>
-        <div class="time-block time-block-event">
-          <div class="time-label">6:15 PM</div>
-          <div class="time-content">
-            <div class="time-content-title">Once Upon a Dream — Showtime</div>
-            <div class="time-content-loc">📍 Steven Schwartz Theatre</div>
-          </div>
-        </div>
-        <div class="time-block">
-          <div class="time-label">8:00 PM</div>
-          <div class="time-content">
-            <div class="time-content-title">Curtain Call Dinner</div>
-            <div class="time-content-desc">Post-show celebration dinner.</div>
-          </div>
-        </div>
+        <div class="time-block"><div class="time-label">Day</div><div class="time-content"><div class="time-content-title">NYC Exploration</div><div class="time-content-desc">Free time — museums, Central Park, food.</div></div></div>
+        <div class="time-block"><div class="time-label">Evening</div><div class="time-content"><div class="time-content-title">Broadway Show</div><div class="time-content-desc">The whole crew. Details in Broadway tab.</div></div></div>
       </div>
     </div>
-
-    <!-- WED JUN 24 -->
     <div class="day-card" onclick="toggleDay(this)">
       <div class="day-card-header">
         <div class="day-left">
           <div class="day-date-box"><div class="day-date-num">24</div><div class="day-date-dow">Wed</div></div>
-          <div class="day-info">
-            <div class="day-title">German House + Quintessential NY</div>
-            <div class="day-badges"><span class="badge badge-match">⚽ World Cup Fan Zone</span><span class="badge badge-event">NY Nite</span></div>
-          </div>
-        </div>
-        <div class="chevron">›</div>
+          <div class="day-info"><div class="day-title">USA vs Portugal</div><div class="day-badges"><span class="badge badge-match">⚽ Match Day</span></div></div>
+        </div><div class="chevron">›</div>
       </div>
       <div class="day-body">
-        <div class="time-block time-block-match">
-          <div class="time-label">Day</div>
-          <div class="time-content">
-            <div class="time-content-title"><a href="https://www.dfb.de/news-2/for-the-2026-world-cup-dfb-to-open-german-house-of-soccer-in-new-york" target="_blank" style="color:var(--sky)">German House of Soccer</a></div>
-            <div class="time-content-loc">📍 Chelsea Industrial, 525 W 28th St</div>
-            <div class="time-content-desc">Germany's official World Cup fan experience in NYC.</div>
-          </div>
-        </div>
-        <div class="time-block time-block-event">
-          <div class="time-label">Evening</div>
-          <div class="time-content">
-            <div class="time-content-title">Quintessential NY Nite</div>
-            <div class="time-content-desc">Central Park Stroll → Dinner → Don't Tell Mama → Top of the Rock Skylift</div>
-          </div>
-        </div>
+        <div class="time-block"><div class="time-label">Afternoon</div><div class="time-content"><div class="time-content-title">Depart for MetLife</div><div class="time-content-desc">2:00 PM departure. Game at 5:00 PM.</div></div></div>
+        <div class="time-block"><div class="time-label">Evening</div><div class="time-content"><div class="time-content-title">USA 🇺🇸 vs Portugal 🇵🇹</div><div class="time-content-desc">MetLife Stadium · East Rutherford, NJ</div></div></div>
       </div>
     </div>
-
-    <!-- THU JUN 25 -->
     <div class="day-card" onclick="toggleDay(this)">
       <div class="day-card-header">
         <div class="day-left">
           <div class="day-date-box"><div class="day-date-num">25</div><div class="day-date-dow">Thu</div></div>
-          <div class="day-info">
-            <div class="day-title">Ecuador vs Germany</div>
-            <div class="day-badges"><span class="badge badge-match">⚽ Kickoff 4:00 PM</span><span class="badge badge-general">Indian Breakfast</span></div>
-          </div>
-        </div>
-        <div class="chevron">›</div>
+          <div class="day-info"><div class="day-title">Kids Movie Night</div><div class="day-badges"><span class="badge badge-event">Kids Night</span></div></div>
+        </div><div class="chevron">›</div>
       </div>
       <div class="day-body">
-        <div class="time-block">
-          <div class="time-label">Morning</div>
-          <div class="time-content">
-            <div class="time-content-title">Ravilethe Bhakshanam</div>
-            <div class="time-content-desc">Rashmi hosts Indian breakfast for the group.</div>
-          </div>
-        </div>
-        <div class="time-block time-block-match">
-          <div class="time-label">1:00 PM</div>
-          <div class="time-content">
-            <div class="time-content-title">Depart for MetLife Stadium</div>
-            <div class="time-content-desc">Kickoff: 4:00 PM · Ecuador vs Germany</div>
-          </div>
-        </div>
+        <div class="time-block"><div class="time-label">Evening</div><div class="time-content"><div class="time-content-title">Kids Movie Night</div><div class="time-content-desc">Movies, snacks, and fun for the youngest crew at Sky Castle.</div></div></div>
       </div>
     </div>
-
-    <!-- FRI JUN 26 -->
     <div class="day-card" onclick="toggleDay(this)">
       <div class="day-card-header">
         <div class="day-left">
           <div class="day-date-box"><div class="day-date-num">26</div><div class="day-date-dow">Fri</div></div>
-          <div class="day-info">
-            <div class="day-title">Closing Ceremonies</div>
-            <div class="day-badges"><span class="badge badge-general">Final Night</span></div>
-          </div>
-        </div>
-        <div class="chevron">›</div>
+          <div class="day-info"><div class="day-title">Family Day & Farewell</div><div class="day-badges"><span class="badge badge-event">Farewell Dinner</span></div></div>
+        </div><div class="chevron">›</div>
       </div>
       <div class="day-body">
-        <div class="time-block">
-          <div class="time-label">Evening</div>
-          <div class="time-content">
-            <div class="time-content-title">Closing Ceremonies</div>
-            <div class="time-content-loc">📍 AirBnB Command Center</div>
-            <div class="time-content-desc">Final night together. Last stories, last laughs.</div>
-          </div>
-        </div>
+        <div class="time-block"><div class="time-label">Day</div><div class="time-content"><div class="time-content-title">Family Free Time</div><div class="time-content-desc">Last full day together. Explore, relax, revisit favorites.</div></div></div>
+        <div class="time-block"><div class="time-label">Evening</div><div class="time-content"><div class="time-content-title">Farewell Dinner</div><div class="time-content-desc">Last stories, last laughs, the recap everyone needs before heading home.</div></div></div>
       </div>
     </div>
-
-    <!-- SAT JUN 27 -->
     <div class="day-card" onclick="toggleDay(this)">
       <div class="day-card-header">
         <div class="day-left">
           <div class="day-date-box"><div class="day-date-num">27</div><div class="day-date-dow">Sat</div></div>
-          <div class="day-info">
-            <div class="day-title">Panama vs England + Departures</div>
-            <div class="day-badges"><span class="badge badge-match">⚽ Kickoff 5:00 PM</span></div>
-          </div>
-        </div>
-        <div class="chevron">›</div>
+          <div class="day-info"><div class="day-title">Departures + Panama vs England</div><div class="day-badges"><span class="badge badge-travel">✈ Travel</span><span class="badge badge-match">⚽ Match</span></div></div>
+        </div><div class="chevron">›</div>
       </div>
       <div class="day-body">
-        <div class="time-block">
-          <div class="time-label">Morning</div>
-          <div class="time-content">
-            <div class="time-content-title">Departures</div>
-            <div class="time-content-desc">Morning travel to airport / train for most guests.</div>
-          </div>
-        </div>
-        <div class="time-block time-block-match">
-          <div class="time-label">2:00 PM</div>
-          <div class="time-content">
-            <div class="time-content-title">Depart for MetLife Stadium</div>
-            <div class="time-content-desc">Kickoff: 5:00 PM · Panama vs England<br>Attending: Rashmi, Clifton, Fabrizzio</div>
-          </div>
-        </div>
-        <div class="time-block">
-          <div class="time-label">Evening</div>
-          <div class="time-content">
-            <div class="time-content-title">Remaining Departures</div>
-            <div class="time-content-desc">Evening travel to airport / train.</div>
-          </div>
-        </div>
+        <div class="time-block"><div class="time-label">Morning</div><div class="time-content"><div class="time-content-title">Departures</div><div class="time-content-desc">Most of the family heads home. Safe travels.</div></div></div>
+        <div class="time-block"><div class="time-label">Evening</div><div class="time-content"><div class="time-content-title">Panama 🇵🇦 vs England 🏴󠁧󠁢󠁥󠁮󠁧󠁿</div><div class="time-content-desc">Rashmi, Clifton & Fabrizzio stay on. MetLife · 5:00 PM.</div></div></div>
       </div>
     </div>
-
   </div>
-  </div><!-- end list-view -->
-  <div class="fine-print">All participation suggested. Well, not really suggested but more "optionally required". Verstößer haften für alle Konsequenzen.</div>
-  <div class="safe-bottom"></div>
 </div>
 
-<!-- ===== MATCHES TAB ===== -->
+<!-- MATCHES TAB -->
 <div id="panel-matches" class="tab-panel">
-  <div class="match-list">
-
-    <!-- Norway vs Senegal -->
-    <div class="match-hero" id="match-nor-sen">
-      <div class="match-hero-header">
-        <span class="match-hero-date">Monday, June 22nd</span>
-        <span class="match-hero-venue">MetLife Stadium</span>
+  <div class="matches-wrap">
+    <div class="match-card" onclick="openDrawer('match-ecuador-germany')">
+      <div class="match-card-inner">
+        <div class="match-meta">📅 Monday, June 22 · 5:00 PM · MetLife Stadium</div>
+        <div class="match-teams">
+          <div class="match-team"><span class="match-flag">🇪🇨</span><div class="match-name">Ecuador</div></div>
+          <div class="match-vs">VS</div>
+          <div class="match-team"><span class="match-flag">🇩🇪</span><div class="match-name">Germany</div></div>
+        </div>
+        <div class="attending-badge">👨‍👩‍👧‍👦 Full family attending</div>
       </div>
-      <div class="teams-row">
-        <div class="team-block">
-          <div class="team-flag">🇳🇴</div>
-          <div class="team-name">Norway</div>
-          <div class="team-rank">Rank #31</div>
-          <div class="team-stars">Haaland · Ødegaard</div>
-        </div>
-        <div class="vs-box">
-          <div class="vs-text">vs</div>
-          <div class="kickoff-time">8:00 PM</div>
-        </div>
-        <div class="team-block">
-          <div class="team-flag">🇸🇳</div>
-          <div class="team-name">Senegal</div>
-          <div class="team-rank">Rank #14</div>
-          <div class="team-stars">Mané · N. Jackson</div>
-        </div>
-      </div>
-      <div class="match-logistics">
-        <div class="logistics-item">
-          <div class="logistics-label">Depart</div>
-          <div class="logistics-value">5:00 PM</div>
-        </div>
-        <div class="logistics-item">
-          <div class="logistics-label">Kickoff</div>
-          <div class="logistics-value">8:00 PM</div>
-        </div>
-      </div>
-      <div class="attending-row">
-        <div class="attending-label">Attending</div>
-        <div class="attending-chips">
-          <span class="attending-chip">Whitney ✓?</span><span class="attending-chip">Dylan ✓?</span><span class="attending-chip">Liz</span><span class="attending-chip">Todd</span><span class="attending-chip">Mario</span><span class="attending-chip">Lindsey</span><span class="attending-chip">Fabrizzio</span><span class="attending-chip">Rashmi</span><span class="attending-chip">Clifton</span>
-        </div>
-      </div>
-      <a class="match-preview-link" href="https://www.foxsports.com/stories/soccer/norway-world-cup-2026-preview-best-players-roster-history-jersey-predictions" target="_blank">Norway Preview ↗</a>
-      <a class="match-preview-link" href="https://www.foxsports.com/stories/soccer/senegal-world-cup-2026-preview-best-players-roster-history-jersey-predictions" target="_blank" style="border-top:none;">Senegal Preview ↗</a>
     </div>
-
-    <!-- Ecuador vs Germany -->
-    <div class="match-hero" id="match-ecu-ger">
-      <div class="match-hero-header">
-        <span class="match-hero-date">Thursday, June 25th</span>
-        <span class="match-hero-venue">MetLife Stadium</span>
+    <div class="match-card" onclick="openDrawer('match-usa-portugal')">
+      <div class="match-card-inner">
+        <div class="match-meta">📅 Wednesday, June 24 · 5:00 PM · MetLife Stadium</div>
+        <div class="match-teams">
+          <div class="match-team"><span class="match-flag">🇺🇸</span><div class="match-name">USA</div></div>
+          <div class="match-vs">VS</div>
+          <div class="match-team"><span class="match-flag">🇵🇹</span><div class="match-name">Portugal</div></div>
+        </div>
+        <div class="attending-badge">👨‍👩‍👧‍👦 Full family attending</div>
       </div>
-      <div class="teams-row">
-        <div class="team-block">
-          <div class="team-flag">🇪🇨</div>
-          <div class="team-name">Ecuador</div>
-          <div class="team-rank">Rank #23</div>
-          <div class="team-stars">Caicedo · Valencia</div>
-        </div>
-        <div class="vs-box">
-          <div class="vs-text">vs</div>
-          <div class="kickoff-time">4:00 PM</div>
-        </div>
-        <div class="team-block">
-          <div class="team-flag">🇩🇪</div>
-          <div class="team-name">Germany</div>
-          <div class="team-rank">Rank #10</div>
-          <div class="team-stars">Musiala · Wirtz</div>
-        </div>
-      </div>
-      <div class="match-logistics">
-        <div class="logistics-item">
-          <div class="logistics-label">Depart</div>
-          <div class="logistics-value">1:00 PM</div>
-        </div>
-        <div class="logistics-item">
-          <div class="logistics-label">Kickoff</div>
-          <div class="logistics-value">4:00 PM</div>
-        </div>
-      </div>
-      <div class="attending-row">
-        <div class="attending-label">Attending</div>
-        <div class="attending-chips">
-          <span class="attending-chip">Aurora ✓?</span><span class="attending-chip">Camile</span><span class="attending-chip">Rob</span><span class="attending-chip">Ale</span><span class="attending-chip">Hektor</span><span class="attending-chip">Gino</span><span class="attending-chip">Merri</span><span class="attending-chip">Fabrizzio</span><span class="attending-chip">Rashmi</span><span class="attending-chip">Clifton</span>
-        </div>
-      </div>
-      <a class="match-preview-link" href="https://www.foxsports.com/stories/soccer/ecuador-world-cup-2026-preview-best-players-roster-history-jersey-predictions" target="_blank">Ecuador Preview ↗</a>
-      <a class="match-preview-link" href="https://www.foxsports.com/stories/soccer/germany-world-cup-2026-preview-best-players-roster-history-jersey-predictions" target="_blank" style="border-top:none;">Germany Preview ↗</a>
     </div>
-
-    <!-- Panama vs England -->
-    <div class="match-hero" id="match-pan-eng">
-      <div class="match-hero-header">
-        <span class="match-hero-date">Saturday, June 27th</span>
-        <span class="match-hero-venue">MetLife Stadium</span>
+    <div class="match-card" onclick="openDrawer('match-panama-england')">
+      <div class="match-card-inner">
+        <div class="match-meta">📅 Saturday, June 27 · 5:00 PM · MetLife Stadium</div>
+        <div class="match-teams">
+          <div class="match-team"><span class="match-flag">🇵🇦</span><div class="match-name">Panama</div></div>
+          <div class="match-vs">VS</div>
+          <div class="match-team"><span class="match-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span><div class="match-name">England</div></div>
+        </div>
+        <div class="attending-badge">🎟 Rashmi, Clifton, Fabrizzio</div>
       </div>
-      <div class="teams-row">
-        <div class="team-block">
-          <div class="team-flag">🇵🇦</div>
-          <div class="team-name">Panama</div>
-          <div class="team-rank">Rank #30</div>
-          <div class="team-stars">Carrasquilla · Murillo</div>
-        </div>
-        <div class="vs-box">
-          <div class="vs-text">vs</div>
-          <div class="kickoff-time">5:00 PM</div>
-        </div>
-        <div class="team-block">
-          <div class="team-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
-          <div class="team-name">England</div>
-          <div class="team-rank">Rank #4</div>
-          <div class="team-stars">Kane · Bellingham · Foden</div>
-        </div>
-      </div>
-      <div class="match-logistics">
-        <div class="logistics-item">
-          <div class="logistics-label">Depart</div>
-          <div class="logistics-value">2:00 PM</div>
-        </div>
-        <div class="logistics-item">
-          <div class="logistics-label">Kickoff</div>
-          <div class="logistics-value">5:00 PM</div>
-        </div>
-      </div>
-      <div class="attending-row">
-        <div class="attending-label">Attending</div>
-        <div class="attending-chips">
-          <span class="attending-chip">Rashmi</span><span class="attending-chip">Clifton</span><span class="attending-chip">Fabrizzio</span>
-        </div>
-      </div>
-      <a class="match-preview-link" href="https://www.foxsports.com/stories/soccer/panama-world-cup-2026-preview-best-players-roster-history-jersey-predictions" target="_blank">Panama Preview ↗</a>
-      <a class="match-preview-link" href="https://www.foxsports.com/stories/soccer/england-world-cup-2026-preview-best-players-roster-history-jersey-predictions" target="_blank" style="border-top:none;">England Preview ↗</a>
     </div>
-
   </div>
-  <div class="fine-print">All participation suggested. Well, not really suggested but more "optionally required". Verstößer haften für alle Konsequenzen.</div>
-  <div class="safe-bottom"></div>
 </div>
 
-<!-- ===== SQUAD TAB ===== -->
-<div id="panel-squad" class="tab-panel">
-
-  <!-- Squad intro -->
-  <div style="background: linear-gradient(135deg, #D4580A 0%, #9A3412 100%); border-radius: 16px; padding: 20px; color: white; margin-bottom: 20px; position: relative; overflow: hidden;">
-    <div style="position: absolute; top: -20px; right: -10px; font-size: 100px; opacity: 0.08;">⭐</div>
-    <div style="font-size: 10px; color: rgba(255,255,255,0.7); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; margin-bottom: 8px;">June 2026 · NYC</div>
-    <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 6px;">The Squad</div>
-    <div style="font-size: 13px; opacity: 0.8; margin-bottom: 4px;">NYC doesn't know what's coming.</div>
-    <div style="font-size: 13px; opacity: 0.6; margin-bottom: 16px; font-style: italic;">Fearless by nature. Goofy by choice.</div>
-    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-      <span style="background: rgba(255,255,255,0.15); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 600;">Laiken</span>
-      <span style="background: rgba(255,255,255,0.15); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 600;">Aria</span>
-      <span style="background: rgba(255,255,255,0.15); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 600;">Arushka</span>
-      <span style="background: rgba(255,255,255,0.15); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 600;">Ksana</span>
-    </div>
-  </div>
-
-  <!-- Squad Norse: Rockefeller -->
-  <div class="kids-event-card" style="margin-bottom: 20px;">
-    <div class="kids-event-header" style="background: #1565C0;">
-      <div class="kids-event-title">Squad Norse: Rockefeller</div>
-      <div class="kids-event-date">Sunday, June 21st · Morning</div>
-    </div>
-    <div class="kids-event-body">
-      <div class="kids-section-label">The Mission</div>
-      <div style="font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.6;">A Midtown takeover with a Norse twist — waffles, toys, roller skating, and World Cup gear. Back by 2 PM for Mario's Times Square run.</div>
-      <div class="options-list">
-        <div class="option-item">
-          <div class="option-label">🧇 Stop 1 — Scandinavia House</div>
-          <div class="option-desc">58 Park Ave. Norwegian waffles to kick off the Norse mission. Open from 11 AM.</div>
-        </div>
-        <div class="option-item">
-          <div class="option-label">🧸 Stop 2 — FAO Schwarz</div>
-          <div class="option-desc">30 Rockefeller Plaza. The legendary toy store — floor piano, Build-a-Bear, Barbie boutique, larger-than-life everything.</div>
-        </div>
-        <div class="option-item">
-          <div class="option-label">⛸️ Stop 3 — Roller Skating at The Rink</div>
-          <div class="option-desc">Rockefeller Plaza. The rink goes roller skating every summer — under Prometheus with Midtown all around you.</div>
-        </div>
-        <div class="option-item">
-          <div class="option-label">⚽ Stop 4 — FIFA World Cup Store</div>
-          <div class="option-desc">51st St at Rockefeller Center. The squad picks their gear — jerseys, scarves, collectibles.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Kids Take Over the Movies -->
-  <div class="kids-event-card">
-    <div class="kids-event-header">
-      <div class="kids-event-title">Kids Take Over the Movies</div>
-      <div class="kids-event-date">Monday, June 22nd — parallel to Norway vs Senegal</div>
-    </div>
-    <div class="kids-event-body">
-      <div class="kids-section-label">The Squad</div>
-      <div class="kids-people">
-        <span class="kids-person kid">Laiken</span>
-        <span class="kids-person kid">Aria</span>
-        <span class="kids-person kid">Arushka</span>
-        <span class="kids-person kid">Ksana</span>
-      </div>
-      <div class="kids-section-label">Supporting Guides</div>
-      <div class="kids-people">
-        <span class="kids-person chaperone">Aurora ✓?</span>
-        <span class="kids-person chaperone">Ale</span>
-        <span class="kids-person chaperone">Hektor</span>
-        <span class="kids-person chaperone">Rob</span>
-        <span class="kids-person chaperone">Linda</span>
-      </div>
-      <div class="divider"></div>
-      <div class="kids-section-label">Choose Your Adventure</div>
-      <div class="options-list">
-        <div class="option-item">
-          <div class="option-label">Option A — Sky Castle Movie</div>
-          <div class="option-desc">The Squad arranges their optimal living room theatre. Pizza, Nuggets, or whatever the kitchen can offer.</div>
-        </div>
-        <div class="option-item">
-          <div class="option-label">Option B — Command Center Movie</div>
-          <div class="option-desc">Command Center viewing with a rooftop intermission party (theme TBD). Pizza, Nuggets, or other favorite finger food.</div>
-        </div>
-        <div class="option-item">
-          <div class="option-label">Option C — 42nd Street Theater</div>
-          <div class="option-desc"><a href="https://www.amctheatres.com/movie-theatres/new-york-city/amc-empire-25" target="_blank">AMC Empire 25</a> or IMAX. Unlimited snacks. After party at Sky Castle.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="fine-print">All participation suggested. Well, not really suggested but more "optionally required". Verstößer haften für alle Konsequenzen.</div>
-  <div class="safe-bottom"></div>
-</div>
-
-<!-- ===== BROADWAY TAB ===== -->
+<!-- BROADWAY TAB -->
 <div id="panel-broadway" class="tab-panel">
-
-  <div class="broadway-card">
-    <div class="broadway-eyebrow">328 W 48th St · Steven Schwartz Theatre</div>
-    <div class="broadway-title">Once Upon a Dream</div>
-    <div class="broadway-subtitle">The Broadway Experience · Tuesday, June 23rd</div>
-    <div class="broadway-details">
-      <div class="broadway-row">
-        <span class="broadway-row-label">Backstage Tour</span>
-        <span class="broadway-row-value">3:00 PM</span>
-      </div>
-      <div class="broadway-row">
-        <span class="broadway-row-label">Curtain Up</span>
-        <span class="broadway-row-value">6:15 PM</span>
-      </div>
-      <div class="broadway-row">
-        <span class="broadway-row-label">Dinner After</span>
-        <span class="broadway-row-value">8:00 PM</span>
+  <div class="broadway-wrap">
+    <div class="show-card">
+      <div class="show-title">✦ Broadway Night</div>
+      <div class="show-meta">Tuesday, June 23 · Evening · Full Family</div>
+      <div class="show-rows">
+        <div class="show-row"><div class="show-row-icon">🎭</div><div class="show-row-label">Show</div><div class="show-row-value">TBD</div></div>
+        <div class="show-row"><div class="show-row-icon">📍</div><div class="show-row-label">Location</div><div class="show-row-value">Theater District, Midtown Manhattan</div></div>
+        <div class="show-row"><div class="show-row-icon">👥</div><div class="show-row-label">Attending</div><div class="show-row-value">Full family</div></div>
       </div>
     </div>
   </div>
-
-  <div class="explore-section" style="margin-top:20px;">
-    <div class="section-heading">Before the Show</div>
-    <div class="section-sub">Make the most of the afternoon in the Theatre District</div>
-    <div class="explore-grid">
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#F3F0FF;">🎭</div>
-        <div>
-          <div class="explore-card-title">Behind the Scenes Tour — 3:00 PM</div>
-          <div class="explore-card-tag">Steven Schwartz Theatre</div>
-          <div class="explore-card-desc">Meet the cast and production crew who made the magic happen. A rare look backstage.</div>
-        </div>
-      </div>
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#FFF7ED;">🍽️</div>
-        <div>
-          <div class="explore-card-title">Pre-show Bite</div>
-          <div class="explore-card-tag">Restaurant Row, W 46th St</div>
-          <div class="explore-card-desc">46th Street between 8th and 9th Ave is packed with pre-theater options. Don't Tell Mama is right here too.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="explore-section" style="margin-top:20px;">
-    <div class="section-heading">Curtain Call Dinner</div>
-    <div class="section-sub">Kid-friendly, close to 328 W 48th St, outdoor seating in summer</div>
-    <div class="explore-grid">
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#EFF6FF;">🇬🇷</div>
-        <div>
-          <div class="explore-card-title">Souvlaki GR</div>
-          <div class="explore-card-tag">162 W 56th St · ~5 min walk · Outdoor patio</div>
-          <div class="explore-card-desc">Greek island atmosphere, outdoor patio, skewers and pitas the kids will love. Casual, festive, and fun. Book ahead for groups.</div>
-          <a href="https://www.souvlakigr.com/location/souvlaki-gr-midtown-west/" target="_blank">Visit site ↗</a>
-        </div>
-      </div>
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#F0FDF4;">🥗</div>
-        <div>
-          <div class="explore-card-title">Friedman's</div>
-          <div class="explore-card-tag">Edison Hotel, W 47th St · 1 min walk</div>
-          <div class="explore-card-desc">American comfort food right next door to the theatre. Great burgers, mac & cheese, very family friendly. Outdoor seating available in summer.</div>
-          <a href="https://www.friedmansrestaurant.com" target="_blank">Visit site ↗</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="fine-print">All participation suggested. Well, not really suggested but more "optionally required". Verstößer haften für alle Konsequenzen.</div>
-  <div class="safe-bottom"></div>
 </div>
 
-<!-- ===== EXPLORE TAB ===== -->
+<!-- EXPLORE TAB -->
 <div id="panel-explore" class="tab-panel">
-
-  <div class="explore-section">
-    <div class="section-heading">Culture & Heritage</div>
-    <div class="section-sub">Tied to the teams you're watching</div>
-    <div class="explore-grid">
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#E6F4EC;">🌍</div>
-        <div>
-          <div class="explore-card-title">Little Senegal — Africa Kine</div>
-          <div class="explore-card-tag">Harlem</div>
-          <div class="explore-card-desc">Traditional Thieboudienne. The real deal. Malcolm Shabazz Market for West African textiles.</div>
-        </div>
-      </div>
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#EFF6FF;">🧇</div>
-        <div>
-          <div class="explore-card-title">Nordic Roots</div>
-          <div class="explore-card-tag">Manhattan</div>
-          <div class="explore-card-desc">Seamen's Church for waffles & coffee. Scandinavia House for Nordic design & art exhibits.</div>
-        </div>
-      </div>
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#FFF7ED;">🗽</div>
-        <div>
-          <div class="explore-card-title">Top of the Rock</div>
-          <div class="explore-card-tag">Midtown</div>
-          <div class="explore-card-desc">Sunset skyline views that will stop everyone mid-sentence. Follow with Birdland Jazz.</div>
-        </div>
-      </div>
+  <div class="explore-wrap">
+    <div class="explore-section">
+      <div class="explore-section-title">🗽 Iconic NYC</div>
+      <div class="explore-card"><div class="explore-name">Central Park</div><div class="explore-desc">Bike rentals, rowboats, the Great Lawn. Best in the morning.</div></div>
+      <div class="explore-card"><div class="explore-name">The High Line</div><div class="explore-desc">Elevated park with great food vendors and Hudson views. Easy walk from home base.</div></div>
+      <div class="explore-card"><div class="explore-name">Brooklyn Bridge Walk</div><div class="explore-desc">30 min walk, great views. End in DUMBO for pizza at Juliana's.</div></div>
+    </div>
+    <div class="explore-section">
+      <div class="explore-section-title">🍕 Food & Eats</div>
+      <div class="explore-card"><div class="explore-name">Joe's Pizza</div><div class="explore-desc">The classic NYC slice. Cash only. Multiple locations.</div></div>
+      <div class="explore-card"><div class="explore-name">Chelsea Market</div><div class="explore-desc">Indoor food hall — something for everyone. 10 min walk.</div></div>
+      <div class="explore-card"><div class="explore-name">Shake Shack (Madison Square Park)</div><div class="explore-desc">The original. Worth the line, especially with kids.</div></div>
+    </div>
+    <div class="explore-section">
+      <div class="explore-section-title">🎡 Kids & Family</div>
+      <div class="explore-card"><div class="explore-name">American Museum of Natural History</div><div class="explore-desc">Dinosaurs, space, ocean. Full day easily. Book ahead.</div></div>
+      <div class="explore-card"><div class="explore-name">Intrepid Sea, Air & Space Museum</div><div class="explore-desc">Aircraft carrier on the Hudson. Space shuttle inside. Kids love it.</div></div>
     </div>
   </div>
-
-  <div class="explore-section">
-    <div class="section-heading">Quintessential NYC Nights</div>
-    <div class="section-sub">For the adults looking for the real New York</div>
-    <div class="explore-grid">
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#FFFBEB;">🎹</div>
-        <div>
-          <div class="explore-card-title">Bemelmans Bar</div>
-          <div class="explore-card-tag">The Carlyle Hotel · Upper East Side</div>
-          <div class="explore-card-desc">Gold-leaf ceilings, live piano, and the most civilized martini in New York.</div>
-          <a href="https://www.rosewoodhotels.com/en/the-carlyle-new-york/dining/bemelmans-bar" target="_blank">Reserve ↗</a>
-        </div>
-      </div>
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#FFF7ED;">🎷</div>
-        <div>
-          <div class="explore-card-title">Dizzy's Club</div>
-          <div class="explore-card-tag">Lincoln Center · Columbus Circle</div>
-          <div class="explore-card-desc">Jazz with Central Park views from the 5th floor. Cocktails, world-class musicians.</div>
-          <a href="https://jazz.org/dizzys/" target="_blank">Reserve ↗</a>
-        </div>
-      </div>
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#F5F3FF;">🎭</div>
-        <div>
-          <div class="explore-card-title">Don't Tell Mama</div>
-          <div class="explore-card-tag">Restaurant Row · Theatre District</div>
-          <div class="explore-card-desc">Singing bartenders on 46th St. Come ready to participate.</div>
-          <a href="https://donttellmamanyc.com/" target="_blank">Visit ↗</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="explore-section">
-    <div class="section-heading">NYC for Kids</div>
-    <div class="section-sub">Girls 5–10 · Pure magic</div>
-    <div class="explore-grid">
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#FEF9C3;">🎠</div>
-        <div>
-          <div class="explore-card-title">Jane's Carousel</div>
-          <div class="explore-card-tag">Brooklyn Bridge Park</div>
-          <div class="explore-card-desc">Restored 1922 carousel in a glass pavilion with stunning bridge views. A New York treasure.</div>
-        </div>
-      </div>
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#FCE7F3;">🍦</div>
-        <div>
-          <div class="explore-card-title">Museum of Ice Cream</div>
-          <div class="explore-card-tag">Manhattan</div>
-          <div class="explore-card-desc">Instagrammable, interactive, and deeply delicious. The girls will talk about it for months.</div>
-        </div>
-      </div>
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#F0FDF4;">🧸</div>
-        <div>
-          <div class="explore-card-title">The Classics</div>
-          <div class="explore-card-tag">Midtown</div>
-          <div class="explore-card-desc">American Girl Place, FAO Schwarz, and CAMP — each one a full afternoon on its own.</div>
-        </div>
-      </div>
-      <div class="explore-card">
-        <div class="explore-icon" style="background:#EFF6FF;">🌳</div>
-        <div>
-          <div class="explore-card-title">Alice in Wonderland</div>
-          <div class="explore-card-tag">Central Park</div>
-          <div class="explore-card-desc">The bronze statue in Central Park that kids have been climbing for 70 years. A must.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="fine-print">All participation suggested. Well, not really suggested but more "optionally required". Verstößer haften für alle Konsequenzen.</div>
-  <div class="safe-bottom"></div>
 </div>
 
-<!-- ===== MAP TAB ===== -->
+<!-- MAP TAB -->
 <div id="panel-map" class="tab-panel">
-  <div class="map-controls">
-    <button class="map-filter-btn active" onclick="setMapFilter('all', this)">All Spots</button>
-    <button class="map-filter-btn" onclick="setMapFilter('venues', this)">🏨 Stays</button>
-    <button class="map-filter-btn" onclick="setMapFilter('events', this)">🎭 Events</button>
-    <button class="map-filter-btn" onclick="setMapFilter('explore', this)">🗺 Explore</button>
-  </div>
-
-  <div id="leaflet-map"></div>
-
-  <div class="map-legend">
-    <div class="legend-title">Pin Colors</div>
-    <div class="legend-items">
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#1565C0;"></div>
-        <div><div class="legend-text">Home Base locations</div><div class="legend-sub">Sky Castle · Wyndham · Command Center</div></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#D4A843;"></div>
-        <div><div class="legend-text">Match Stadium</div><div class="legend-sub">MetLife Stadium · all 3 games</div></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#9333EA;"></div>
-        <div><div class="legend-text">Broadway</div><div class="legend-sub">Once Upon a Dream</div></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#1A6B3C;"></div>
-        <div><div class="legend-text">Scheduled Events</div><div class="legend-sub">Harlem · Chelsea · Times Square</div></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#C0392B;"></div>
-        <div><div class="legend-text">Explore / Nightlife</div><div class="legend-sub">Restaurants · Jazz · Bars</div></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#D4580A;"></div>
-        <div><div class="legend-text">Kids Activities</div><div class="legend-sub">Museums · Parks · Carousels</div></div>
-      </div>
+  <div class="map-wrap">
+    <div class="map-filters">
+      <button class="map-filter-btn active" onclick="setMapFilter('all', this)">🗺 All Spots</button>
+      <button class="map-filter-btn" onclick="setMapFilter('venues', this)">🏨 Stays</button>
+      <button class="map-filter-btn" onclick="setMapFilter('events', this)">⚽ Events</button>
+      <button class="map-filter-btn" onclick="setMapFilter('food', this)">🍕 Food</button>
     </div>
+    <div id="leaflet-map"></div>
   </div>
-  <div class="fine-print">All participation suggested. Well, not really suggested but more "optionally required". Verstößer haften für alle Konsequenzen.</div>
-  <div class="safe-bottom"></div>
+</div>
+
+<!-- PICK YOUR NATION TAB -->
+<div id="panel-nations" class="tab-panel">
+  <div class="nation-header">
+    <div class="nation-header-title">🌍 Pick Your Nation</div>
+    <div class="nation-header-sub">Parade of Nations · June 21 · Choose your country to represent</div>
+  </div>
+  <div class="nation-search-wrap">
+    <input class="nation-search" type="text" placeholder="🔍  Search countries..." oninput="filterNations(this.value)" />
+  </div>
+  <div id="nations-container"></div>
 </div>
 
 </div><!-- end app-body -->
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <div id="drawerContent"></div>
+</div>
+
+<!-- NATION DRAWER -->
+<div class="drawer-overlay" id="nationOverlay" onclick="closeNationDrawer()"></div>
+<div class="drawer" id="nationDrawer">
+  <div class="drawer-handle"></div>
+  <div id="nationDrawerContent"></div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-function switchTab(name) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+// ===== TAB SWITCHING =====
+function switchTab(tab) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('panel-' + name).classList.add('active');
-  if (name === 'map') {
-    setTimeout(() => {
-      if (!window.leafletMap) initLeafletMap();
-      else { window.leafletMap.invalidateSize(); setMapFilter('all', document.querySelector('.map-filter-btn')); }
-    }, 50);
-  }
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (tab === 'map' && !leafletMap) setTimeout(initLeafletMap, 100);
 }
 
 function toggleDay(card) {
   card.classList.toggle('open');
 }
 
-function setScheduleView(view) {
-  const grid = document.getElementById('grid-view');
-  const list = document.getElementById('list-view');
-  const btnList = document.getElementById('btn-list');
-  const btnGrid = document.getElementById('btn-grid');
-  if (view === 'grid') {
-    grid.classList.add('active');
-    list.classList.add('hidden');
-    btnGrid.classList.add('active');
-    btnList.classList.remove('active');
-  } else {
-    grid.classList.remove('active');
-    list.classList.remove('hidden');
-    btnList.classList.add('active');
-    btnGrid.classList.remove('active');
+// ===== DRAWER =====
+const drawerData = {
+  'match-ecuador-germany': {
+    date: 'Monday, June 22',
+    title: 'Ecuador vs Germany',
+    badge: { text: '⚽ Match', cls: 'drawer-badge-match' },
+    rows: [
+      { icon: '📍', label: 'Venue', value: 'MetLife Stadium · East Rutherford, NJ' },
+      { icon: '🚌', label: 'Depart', value: '2:00 PM from Sky Castle' },
+      { icon: '⚽', label: 'Kickoff', value: '5:00 PM' },
+      { icon: '👥', label: 'Attending', value: 'Full family' },
+      { icon: '🇪🇨', label: 'Ecuador', value: 'Rank #40 · Stars: Caicedo, Plata, Preciado' },
+      { icon: '🇩🇪', label: 'Germany', value: 'Rank #3 · Stars: Musiala, Wirtz, Müller' },
+    ]
+  },
+  'match-usa-portugal': {
+    date: 'Wednesday, June 24',
+    title: 'USA vs Portugal',
+    badge: { text: '⚽ Match', cls: 'drawer-badge-match' },
+    rows: [
+      { icon: '📍', label: 'Venue', value: 'MetLife Stadium · East Rutherford, NJ' },
+      { icon: '🚌', label: 'Depart', value: '2:00 PM from Sky Castle' },
+      { icon: '⚽', label: 'Kickoff', value: '5:00 PM' },
+      { icon: '👥', label: 'Attending', value: 'Full family' },
+      { icon: '🇺🇸', label: 'USA', value: 'Rank #14 · Stars: Pulisic, Reyna, Turner' },
+      { icon: '🇵🇹', label: 'Portugal', value: 'Rank #6 · Stars: Ronaldo, Félix, Leão' },
+    ]
+  },
+  'match-panama-england': {
+    date: 'Saturday, June 27',
+    title: 'Panama vs England',
+    badge: { text: '⚽ Match', cls: 'drawer-badge-match' },
+    rows: [
+      { icon: '📍', label: 'Venue', value: 'MetLife Stadium · East Rutherford, NJ' },
+      { icon: '🚌', label: 'Depart', value: '2:00 PM' },
+      { icon: '⚽', label: 'Kickoff', value: '5:00 PM' },
+      { icon: '👥', label: 'Attending', value: 'Rashmi, Clifton, Fabrizzio' },
+      { icon: '🇵🇦', label: 'Panama', value: 'Rank #30 · Stars: Carrasquilla, Murillo' },
+      { icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', label: 'England', value: 'Rank #4 · Stars: Kane, Bellingham, Foden' },
+    ]
   }
+};
+
+function openDrawer(id) {
+  const data = drawerData[id];
+  if (!data) return;
+  let html = `<div class="drawer-header"><div class="drawer-date">${data.date}</div><div class="drawer-title">${data.title}</div>`;
+  if (data.badge) html += `<div class="drawer-badge ${data.badge.cls}">${data.badge.text}</div>`;
+  html += `</div><div class="drawer-rows">`;
+  data.rows.forEach(r => {
+    html += `<div class="drawer-row"><div class="drawer-row-icon">${r.icon}</div><div class="drawer-row-content"><div class="drawer-row-label">${r.label}</div><div class="drawer-row-value">${r.value}</div></div></div>`;
+  });
+  html += `</div>`;
+  document.getElementById('drawerContent').innerHTML = html;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
 }
 
-// All locations with real coordinates
-const allLocations = [
-  // HOME BASE
-  { id: 'home', cat: ['all','venues'],
-    label: 'Sky Castle — Home Base', sub: '460 W 42nd St #58B, NYC',
-    lat: 40.7592, lng: -73.9945, color: '#1565C0', emoji: '🏠' },
-  { id: 'wyndham', cat: ['all','venues'],
-    label: 'Ramada by Wyndham', sub: '343 W 44th St — family hotel (confirm)',
-    lat: 40.7607, lng: -73.9918, color: '#1565C0', emoji: '🏨' },
-  { id: 'commandcenter', cat: ['all','venues'],
-    label: 'Command Center', sub: '42 E 38th St',
-    lat: 40.7510, lng: -73.9816, color: '#1565C0', emoji: '🏢' },
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
 
-  // MATCH VENUES
-  { id: 'metlife', cat: ['all','events'],
-    label: 'MetLife Stadium', sub: 'All 3 matches · East Rutherford, NJ',
-    lat: 40.8135, lng: -74.0745, color: '#D4A843', emoji: '⚽' },
-
-  // BROADWAY
-  { id: 'broadway', cat: ['all','events'],
-    label: 'Once Upon a Dream', sub: 'Steven Schwartz Theatre · Tue Jun 23',
-    lat: 40.7580, lng: -73.9855, color: '#9333EA', emoji: '🎭' },
-
-  // SCHEDULED EVENTS
-  { id: 'senegal', cat: ['all','events'],
-    label: 'Little Senegal', sub: '116th St, Harlem · Mon Jun 22 morning',
-    lat: 40.8037, lng: -73.9503, color: '#1A6B3C', emoji: '🌍' },
-  { id: 'german', cat: ['all','events'],
-    label: 'German House of Soccer', sub: '525 W 28th St, Chelsea · Wed Jun 24',
-    lat: 40.7498, lng: -74.0020, color: '#1A6B3C', emoji: '🇩🇪' },
-  { id: 'timessq', cat: ['all','events'],
-    label: 'Times Square', sub: 'Mario Takes on Times Square · Sun Jun 21',
-    lat: 40.7580, lng: -73.9855, color: '#1A6B3C', emoji: '🗽' },
-  { id: 'mclub', cat: ['all','events'],
-    label: 'MClub — Opening Night', sub: 'Dinner, Cocktails & Games · Sun Jun 21',
-    lat: 40.7614, lng: -73.9776, color: '#1A6B3C', emoji: '🥂' },
-  { id: 'amc', cat: ['all','events'],
-    label: 'AMC Empire 25', sub: '234 W 42nd St · Kids Movie Option',
-    lat: 40.7566, lng: -73.9903, color: '#D4580A', emoji: '🎬' },
-
-  // EXPLORE / NIGHTLIFE
-  { id: 'fao', cat: ['all','events','explore'],
-    label: 'FAO Schwarz', sub: '30 Rockefeller Plaza · Squad Norse: Rockefeller',
-    lat: 40.7587, lng: -73.9787, color: '#D4580A', emoji: '🧸' },
-  { id: 'therink', cat: ['all','events','explore'],
-    label: 'The Rink — Summer Roller Skating', sub: 'Rockefeller Plaza · Squad Norse: Rockefeller',
-    lat: 40.7584, lng: -73.9790, color: '#D4580A', emoji: '⛸️' },
-  { id: 'scandhouse', cat: ['all','events','explore'],
-    label: 'Scandinavia House', sub: '58 Park Ave · Norwegian waffles',
-    lat: 40.7482, lng: -73.9826, color: '#1A6B3C', emoji: '🧇' },
-  { id: 'topr', cat: ['all','events','explore'],
-    label: 'Top of the Rock', sub: 'Rockefeller Center · Quintessential NY Nite',
-    lat: 40.7587, lng: -73.9787, color: '#C0392B', emoji: '🌆' },
-  { id: 'dizzys', cat: ['all','explore'],
-    label: "Dizzy's Club", sub: 'Jazz at Lincoln Center · Columbus Circle',
-    lat: 40.7685, lng: -73.9836, color: '#C0392B', emoji: '🎷' },
-  { id: 'bemelmans', cat: ['all','explore'],
-    label: 'Bemelmans Bar', sub: 'The Carlyle Hotel · Upper East Side',
-    lat: 40.7742, lng: -73.9630, color: '#C0392B', emoji: '🎹' },
-  { id: 'nines', cat: ['all','explore'],
-    label: 'The Nines', sub: 'Mercer Hotel · NoHo Supper Club',
-    lat: 40.7253, lng: -73.9989, color: '#C0392B', emoji: '🍷' },
-  { id: 'mama', cat: ['all','explore'],
-    label: "Don't Tell Mama", sub: "Restaurant Row · W 46th St",
-    lat: 40.7601, lng: -73.9890, color: '#C0392B', emoji: '🎤' },
-
-  // KIDS
-  { id: 'carousel', cat: ['all','explore'],
-    label: "Jane's Carousel", sub: 'Brooklyn Bridge Park',
-    lat: 40.7024, lng: -73.9874, color: '#D4580A', emoji: '🎠' },
-  { id: 'moic', cat: ['all','explore'],
-    label: 'Museum of Ice Cream', sub: 'Manhattan',
-    lat: 40.7233, lng: -74.0030, color: '#D4580A', emoji: '🍦' },
-  { id: 'fao', cat: ['all','explore'],
-    label: 'FAO Schwarz', sub: '30 Rockefeller Plaza',
-    lat: 40.7587, lng: -73.9787, color: '#D4580A', emoji: '🧸' },
-  { id: 'americangirl', cat: ['all','explore'],
-    label: 'American Girl Place', sub: 'Rockefeller Center area',
-    lat: 40.7600, lng: -73.9780, color: '#D4580A', emoji: '🎀' },
-  { id: 'alice', cat: ['all','explore'],
-    label: 'Alice in Wonderland Statue', sub: 'Central Park · E 74th St entrance',
-    lat: 40.7766, lng: -73.9700, color: '#D4580A', emoji: '🐇' },
-];
-
+// ===== MAP =====
 let leafletMap = null;
 let activeMarkers = [];
 
+const allLocations = [
+  { id: 'home', cat: ['all','venues'], label: 'Sky Castle — Home Base', sub: '460 W 42nd St #58B, NYC', lat: 40.7592, lng: -73.9945, color: '#1565C0', emoji: '🏠' },
+  { id: 'wyndham', cat: ['all','venues'], label: 'Wyndham (confirm)', sub: 'Midtown Manhattan', lat: 40.7549, lng: -73.9840, color: '#1565C0', emoji: '🏨' },
+  { id: 'commandcenter', cat: ['all','venues'], label: 'Command Center', sub: 'Midtown Manhattan', lat: 40.7580, lng: -73.9855, color: '#1565C0', emoji: '🏢' },
+  { id: 'metlife', cat: ['all','events'], label: 'MetLife Stadium', sub: 'East Rutherford, NJ', lat: 40.8135, lng: -74.0744, color: '#1A6B3C', emoji: '⚽' },
+  { id: 'broadway', cat: ['all','events'], label: 'Broadway Theater District', sub: 'Midtown Manhattan', lat: 40.7590, lng: -73.9845, color: '#5B21B6', emoji: '🎭' },
+  { id: 'centralpark', cat: ['all','food'], label: 'Central Park', sub: 'Manhattan', lat: 40.7851, lng: -73.9683, color: '#D4580A', emoji: '🌳' },
+  { id: 'chelseamarket', cat: ['all','food'], label: 'Chelsea Market', sub: '75 9th Ave, NYC', lat: 40.7424, lng: -74.0048, color: '#D4580A', emoji: '🍕' },
+];
+
 function makeIcon(color, emoji) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40">
-    <path d="M16 0C7.163 0 0 7.163 0 16c0 10 16 24 16 24S32 26 32 16C32 7.163 24.837 0 16 0z" fill="${color}"/>
-    <circle cx="16" cy="16" r="10" fill="white" opacity="0.25"/>
-    <text x="16" y="21" text-anchor="middle" font-size="13">${emoji}</text>
-  </svg>`;
-  return L.divIcon({
-    html: svg,
-    className: '',
-    iconSize: [32, 40],
-    iconAnchor: [16, 40],
-    popupAnchor: [0, -40]
-  });
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40"><path d="M16 0C7.163 0 0 7.163 0 16c0 10 16 24 16 24S32 26 32 16C32 7.163 24.837 0 16 0z" fill="${color}"/><circle cx="16" cy="16" r="10" fill="white" opacity="0.25"/><text x="16" y="21" text-anchor="middle" font-size="13">${emoji}</text></svg>`;
+  return L.divIcon({ html: svg, className: '', iconSize: [32,40], iconAnchor: [16,40], popupAnchor: [0,-40] });
 }
 
 function initLeafletMap() {
   leafletMap = L.map('leaflet-map', { zoomControl: true }).setView([40.758, -73.985], 12);
-  window.leafletMap = leafletMap;
-
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    attribution: '© OpenStreetMap © CARTO',
-    maxZoom: 19
-  }).addTo(leafletMap);
-
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap © CARTO', maxZoom: 19 }).addTo(leafletMap);
   renderMarkers('all');
 }
 
 function renderMarkers(filter) {
   activeMarkers.forEach(m => leafletMap.removeLayer(m));
   activeMarkers = [];
-
   const locs = allLocations.filter(l => l.cat.includes(filter));
   const bounds = [];
-
   locs.forEach(loc => {
     const marker = L.marker([loc.lat, loc.lng], { icon: makeIcon(loc.color, loc.emoji) })
       .bindPopup(`<strong style="font-size:13px;">${loc.label}</strong><br><span style="font-size:11px;color:#6B7280;">${loc.sub}</span>`, { maxWidth: 200 })
@@ -1567,8 +551,7 @@ function renderMarkers(filter) {
     activeMarkers.push(marker);
     bounds.push([loc.lat, loc.lng]);
   });
-
-  if (bounds.length > 1) leafletMap.fitBounds(bounds, { padding: [40, 40] });
+  if (bounds.length > 1) leafletMap.fitBounds(bounds, { padding: [40,40] });
   else if (bounds.length === 1) leafletMap.setView(bounds[0], 14);
 }
 
@@ -1578,277 +561,341 @@ function setMapFilter(filter, btn) {
   if (leafletMap) renderMarkers(filter);
 }
 
-// Open first day by default
-document.querySelector('.day-card').classList.add('open');
-</script>
-<!-- CELL DETAIL DRAWER -->
-<div class="cell-drawer-overlay" id="cell-drawer-overlay" onclick="handleOverlayClick(event)">
-  <div class="cell-drawer" id="cell-drawer">
-    <div class="drawer-handle"><div class="drawer-handle-bar"></div></div>
-    <div class="drawer-header">
-      <div class="drawer-header-left">
-        <div class="drawer-date" id="drawer-date"></div>
-        <div class="drawer-title" id="drawer-title"></div>
-      </div>
-      <button class="drawer-close" onclick="closeDrawer()">×</button>
-    </div>
-    <div class="drawer-body" id="drawer-body"></div>
-  </div>
-</div>
+// ===== NATIONS DATA =====
+const HERITAGE = ['Norway','Germany','USA','Mexico','England'];
 
-<script>
-const drawerData = {
-  'sat20-morning': {
-    date: 'Saturday, June 20',
-    title: 'Arrivals',
-    rows: [
-      { icon: '🏠', label: 'Sky Castle', value: '460 W 42nd St #58B' },
-      { icon: '🏨', label: 'Ramada by Wyndham', value: '343 W 44th St (confirm)' },
-      { icon: '🏢', label: 'Command Center', value: '42 E 38th St' },
-      { icon: '🗺', label: 'First move', value: 'Explore Hell\'s Kitchen — grab coffee, find your subway stop, get comfortable.' },
-    ]
-  },
-  'sat20-day': {
-    date: 'Saturday, June 20',
-    title: 'Neighborhood Orientation',
-    rows: [
-      { icon: '🗺', label: 'Plan', value: 'Explore Hell\'s Kitchen and the surrounding area. Get your bearings before the full family arrives.' },
-    ]
-  },
-  'sat20-eve': {
-    date: 'Saturday, June 20 · Evening',
-    title: 'Welcome Dinner · NYC Pizza Night',
-    badge: { text: 'General', cls: '' },
-    rows: [
-      { icon: '📍', label: 'Location', value: 'Command Center · 42 E 38th St' },
-      { icon: '🍕', label: 'Vibe', value: 'First meal together. Classic NYC slice. Everyone gets a say on the topping order.' },
-      { icon: '👨‍👩‍👧‍👦', label: 'Who', value: 'Full family — first gathering of the week.' },
-    ]
-  },
-  'sun21-morning': {
-    date: 'Sunday, June 21 · Morning',
-    title: 'Squad Norse: Rockefeller',
-    badge: { text: 'The Squad', cls: 'drawer-badge-kids' },
-    rows: [
-      { icon: '🧇', label: 'Stop 1 — Scandinavia House', value: '58 Park Ave · ~10 min walk from Sky Castle. Norwegian waffles to kick off the Norse mission. Open Sun 11 AM–5 PM.' },
-      { icon: '🧸', label: 'Stop 2 — FAO Schwarz', value: '30 Rockefeller Plaza · open from 10 AM. The legendary toy store — floor piano, Build-a-Bear, Barbie boutique, larger-than-life everything.' },
-      { icon: '⛸️', label: 'Stop 3 — Roller Skating at The Rink', value: 'Rockefeller Plaza · open Sun 8 AM–10 PM. The rink goes roller skating every summer — skating under Prometheus with Midtown all around you.' },
-      { icon: '⚽', label: 'Stop 4 — FIFA World Cup Store', value: '51st St at Rockefeller Center. The squad picks their gear. Jerseys, scarves, collectibles.' },
-      { icon: '🕑', label: 'Back by 2:00 PM', value: 'Mario\'s Times Square takeover starts at 3:00 PM.' },
-    ]
-  },
-  'sun21-day': {
-    date: 'Sunday, June 21 · 3:00 PM',
-    title: 'Mario Takes on Times Square',
-    badge: { text: 'Event', cls: 'drawer-badge-event' },
-    rows: [
-      { icon: '📍', label: 'Location', value: 'Times Square · 42nd St & 7th Ave' },
-      { icon: '🎯', label: 'Mission', value: 'Mario leads the family on his personal Times Square experience. Whatever he says, goes.' },
-      { icon: '🎟️', label: 'TKTS Booth', value: 'Right here on the plaza — half-price Broadway tickets for same-day shows.' },
-    ]
-  },
-  'sun21-eve-open': {
-    date: 'Sunday, June 21 · 6:00 PM',
-    title: 'Opening Ceremonies',
-    badge: { text: 'Event', cls: 'drawer-badge-event' },
-    rows: [
-      { icon: '📍', label: 'Location', value: 'Sky Castle · 460 W 42nd St #58B' },
-      { icon: '🥂', label: 'Vibe', value: 'Official kickoff to the week. Everyone together for the first time. Toast, speeches, the works.' },
-    ]
-  },
-  'sun21-eve-dinner': {
-    date: 'Sunday, June 21 · 7:30 PM',
-    title: 'Dinner, Cocktails & Games',
-    rows: [
-      { icon: '📍', label: 'Location', value: 'MClub' },
-      { icon: '🎲', label: 'Vibe', value: 'Dinner flows into cocktails flows into games. No agenda — just the family being the family.' },
-    ]
-  },
-  'mon22-morning': {
-    date: 'Monday, June 22 · Morning',
-    title: 'Lions of Teranga at Little Senegal',
-    badge: { text: 'Event', cls: 'drawer-badge-event' },
-    rows: [
-      { icon: '📍', label: 'Location', value: '116th Street, Harlem — "Little Senegal"' },
-      { icon: '🌍', label: 'Plan', value: 'West African culture ahead of tonight\'s match. Africa Kine for traditional Thieboudienne. Malcolm Shabazz Market for textiles and crafts.' },
-      { icon: '⚽', label: 'Tonight', value: 'Senegal is ranked #14 in the world. Stars: Sadio Mané, Nicolas Jackson.' },
-    ]
-  },
-  'mon22-eve-match': {
-    date: 'Monday, June 22 · Evening',
-    title: 'Norway vs Senegal',
-    badge: { text: 'Match', cls: 'drawer-badge-match' },
-    rows: [
-      { icon: '📍', label: 'Venue', value: 'MetLife Stadium · East Rutherford, NJ' },
-      { icon: '🚌', label: 'Depart', value: '5:00 PM from Sky Castle' },
-      { icon: '⚽', label: 'Kickoff', value: '8:00 PM' },
-      { icon: '👥', label: 'Attending', value: 'Whitney (confirm), Dylan (confirm), Liz, Todd, Mario, Lindsey, Fabrizzio, Rashmi, Clifton' },
-      { icon: '🇳🇴', label: 'Norway', value: 'Rank #31 · Stars: Erling Haaland, Martin Ødegaard' },
-      { icon: '🇸🇳', label: 'Senegal', value: 'Rank #14 · Stars: Sadio Mané, Nicolas Jackson' },
-    ]
-  },
-  'mon22-eve-kids': {
-    date: 'Monday, June 22 · Evening',
-    title: 'Kids Take Over the Movies',
-    badge: { text: 'Kids', cls: 'drawer-badge-kids' },
-    rows: [
-      { icon: '🎬', label: 'Timing', value: 'Parallel to Norway vs Senegal match' },
-      { icon: '⭐', label: 'The Squad', value: 'Laiken, Aria, Arushka, Ksana' },
-      { icon: '🧑‍🤝‍🧑', label: 'Supporting Guides', value: 'Aurora (confirm), Ale, Hektor, Rob, Linda' },
-      { icon: '🅐', label: 'Option A', value: 'Sky Castle Movie — The Squad arranges their optimal living room theatre. Pizza, Nuggets, or whatever the kitchen can offer.' },
-      { icon: '🅑', label: 'Option B', value: 'Command Center Movie — rooftop intermission party (theme TBD). Pizza, Nuggets, or other favorite finger food.' },
-      { icon: '🅒', label: 'Option C', value: '<a href="https://www.amctheatres.com/movie-theatres/new-york-city/amc-empire-25" target="_blank">AMC Empire 25</a> or IMAX — unlimited snacks. After party at Sky Castle.' },
-    ]
-  },
-  'tue23-day': {
-    date: 'Tuesday, June 23 · 3:00 PM',
-    title: 'Behind the Scenes — Once Upon a Dream',
-    badge: { text: 'Event', cls: 'drawer-badge-event' },
-    rows: [
-      { icon: '📍', label: 'Location', value: 'Steven Schwartz Theatre · 328 W 48th St' },
-      { icon: '🎭', label: 'Plan', value: 'Meet the cast and mingle with backstage and production crew. A rare look behind the curtain before showtime.' },
-      { icon: '⏰', label: 'Show time', value: '6:15 PM — staying in the theatre district all afternoon.' },
-    ]
-  },
-  'tue23-eve-show': {
-    date: 'Tuesday, June 23 · 6:15 PM',
-    title: 'Once Upon a Dream',
-    badge: { text: 'Broadway', cls: 'drawer-badge-event' },
-    rows: [
-      { icon: '📍', label: 'Theatre', value: 'Steven Schwartz Theatre · 328 W 48th St' },
-      { icon: '⏰', label: 'Curtain', value: '6:15 PM · seated by 6:00 PM' },
-      { icon: '✦', label: 'The moment', value: 'The 7-year-old\'s show. Bucket list of the week.' },
-    ]
-  },
-  'tue23-eve-dinner': {
-    date: 'Tuesday, June 23 · 8:00 PM',
-    title: 'Curtain Call Dinner',
-    rows: [
-      { icon: '📍', label: 'Theatre', value: 'Steven Schwartz Theatre · 328 W 48th St' },
-      { icon: '🍽️', label: 'Vibe', value: 'Post-show celebration dinner. The kids will be buzzing — somewhere close, outdoors, where everyone relives the show.' },
-      { icon: '🇬🇷', label: 'Souvlaki GR', value: '162 W 56th St · 5 min walk. Greek island outdoor patio, skewers and pitas, casual and festive.' },
-      { icon: '🥗', label: 'Friedman\'s', value: 'Edison Hotel, W 47th St · 1 min walk. American comfort food, great burgers and mac & cheese, outdoor seating.' },
-    ]
-  },
-  'wed24-day': {
-    date: 'Wednesday, June 24',
-    title: 'German House of Soccer',
-    badge: { text: 'Event', cls: 'drawer-badge-event' },
-    rows: [
-      { icon: '📍', label: 'Location', value: 'Chelsea Industrial · 525 W 28th St, Manhattan' },
-      { icon: '🇩🇪', label: 'What', value: 'Germany\'s official World Cup fan experience in NYC. Football culture, German food, live screenings, merch, energy.' },
-      { icon: '🔗', label: 'Info', value: '<a href="https://www.dfb.de/news-2/for-the-2026-world-cup-dfb-to-open-german-house-of-soccer-in-new-york" target="_blank">Official DFB announcement ↗</a>' },
-    ]
-  },
-  'wed24-eve': {
-    date: 'Wednesday, June 24 · Evening',
-    title: 'Quintessential NY Nite',
-    badge: { text: 'Event', cls: 'drawer-badge-event' },
-    rows: [
-      { icon: '🌳', label: 'Central Park Stroll', value: 'An evening walk through the park as the city cools down. The kind of New York moment you can\'t manufacture.' },
-      { icon: '🍽️', label: 'Dinner', value: 'Sit-down dinner in the city. Bemelmans Bar area (Upper East Side) or wherever the night takes us.' },
-      { icon: '🎹', label: "Don't Tell Mama", value: 'Singing bartenders on Restaurant Row, W 46th St. Classic NYC cabaret energy.' },
-      { icon: '🌃', label: 'Top of the Rock — Skylift', value: 'An open-air rotating platform above the main observation deck — an "extra rise" above the city. Open until midnight.' },
-    ]
-  },
-  'thu25-morning': {
-    date: 'Thursday, June 25 · Morning',
-    title: 'Ravilethe Bhakshanam',
-    badge: { text: 'Event', cls: 'drawer-badge-event' },
-    rows: [
-      { icon: '🍳', label: 'What', value: 'Rashmi hosts a full Indian breakfast for the group. Ravilethe Bhakshanam = morning feast.' },
-      { icon: '⚽', label: 'Match day', value: 'Ecuador vs Germany at 4:00 PM. Departing Sky Castle at 1:00 PM.' },
-    ]
-  },
-  'thu25-day': {
-    date: 'Thursday, June 25',
-    title: 'Ecuador vs Germany',
-    badge: { text: 'Match', cls: 'drawer-badge-match' },
-    rows: [
-      { icon: '📍', label: 'Venue', value: 'MetLife Stadium · East Rutherford, NJ' },
-      { icon: '🚌', label: 'Depart', value: '1:00 PM from Sky Castle' },
-      { icon: '⚽', label: 'Kickoff', value: '4:00 PM' },
-      { icon: '👥', label: 'Attending', value: 'Aurora (confirm), Camile, Rob, Ale, Hektor, Gino, Merri, Fabrizzio, Rashmi, Clifton' },
-      { icon: '🇪🇨', label: 'Ecuador', value: 'Rank #23 · Stars: Moisés Caicedo, Enner Valencia' },
-      { icon: '🇩🇪', label: 'Germany', value: 'Rank #10 · Stars: Jamal Musiala, Florian Wirtz' },
-    ]
-  },
-  'fri26-eve': {
-    date: 'Friday, June 26 · Evening',
-    title: 'Closing Ceremonies',
-    badge: { text: 'Event', cls: 'drawer-badge-event' },
-    rows: [
-      { icon: '📍', label: 'Location', value: 'AirBnB Command Center' },
-      { icon: '🥂', label: 'Vibe', value: 'Final night together. Last stories, last laughs, the recap everyone needs before heading home.' },
-    ]
-  },
-  'sat27-morning': {
-    date: 'Saturday, June 27 · Morning',
-    title: 'Departures',
-    rows: [
-      { icon: '✈️', label: 'Plan', value: 'Morning travel to airport or train.' },
-      { icon: '⚽', label: 'Staying on', value: 'Rashmi, Clifton & Fabrizzio — Panama vs England at 5:00 PM.' },
-    ]
-  },
-  'sat27-day': {
-    date: 'Saturday, June 27',
-    title: 'Panama vs England',
-    badge: { text: 'Match', cls: 'drawer-badge-match' },
-    rows: [
-      { icon: '📍', label: 'Venue', value: 'MetLife Stadium · East Rutherford, NJ' },
-      { icon: '🚌', label: 'Depart', value: '2:00 PM' },
-      { icon: '⚽', label: 'Kickoff', value: '5:00 PM' },
-      { icon: '👥', label: 'Attending', value: 'Rashmi, Clifton, Fabrizzio' },
-      { icon: '🇵🇦', label: 'Panama', value: 'Rank #30 · Stars: Carrasquilla, Murillo' },
-      { icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', label: 'England', value: 'Rank #4 · Stars: Kane, Bellingham, Foden' },
-    ]
-  },
-  'sat27-eve': {
-    date: 'Saturday, June 27 · Evening',
-    title: 'Departures',
-    rows: [
-      { icon: '✈️', label: 'Plan', value: 'Evening travel to airport or train.' },
-      { icon: '💛', label: 'Note', value: 'That\'s a wrap on the June Extravaganza. See you next year.' },
-    ]
-  },
+const nations = [
+  // CONCACAF
+  { name:'USA', flag:'🇺🇸', code:'us', region:'CONCACAF', continent:'North America',
+    funEmoji:'🗽', funFact:'Home to more theme parks than any country on Earth — and the world\'s largest economy.',
+    sport:'American Football', hobbies:'Hiking, BBQ cookouts, basketball, road trips, baseball', food:'Burgers, hot dogs, apple pie, clam chowder',
+    language:'English', deepDive:'The USA is competing in their first World Cup on home soil since 1994. The team has never won the tournament but they have a golden generation of talent including Christian Pulisic — one of the best players in the world.' },
+  { name:'Canada', flag:'🇨🇦', code:'ca', region:'CONCACAF', continent:'North America',
+    funEmoji:'🍁', funFact:'Canada has more lakes than every other country combined — over 2 million of them!',
+    sport:'Ice Hockey', hobbies:'Ice skating, skiing, kayaking, curling, lacrosse', food:'Poutine, maple syrup, butter tarts, tourtière',
+    language:'English & French', deepDive:'Canada is a co-host of this World Cup and it\'s their first time ever qualifying for the tournament. An incredible moment for Canadian soccer.' },
+  { name:'Mexico', flag:'🇲🇽', code:'mx', region:'CONCACAF', continent:'North America',
+    funEmoji:'🌮', funFact:'Mexico is one of the world\'s top 5 most biodiverse countries, home to jaguars, axolotls, and over 1,000 bird species.',
+    sport:'Football (Soccer)', hobbies:'Lucha libre wrestling, charreada rodeo, dancing, cooking', food:'Tacos, mole, tamales, chiles en nogada',
+    language:'Spanish', deepDive:'Mexico is the most successful CONCACAF nation in World Cup history. Their passionate fans — famous for the "El Tri" chant — fill stadiums with incredible energy.' },
+  { name:'Curaçao', flag:'🇨🇼', code:'cw', region:'CONCACAF', continent:'Caribbean',
+    funEmoji:'🏝️', funFact:'Curaçao is the smallest nation ever to qualify for the FIFA World Cup!',
+    sport:'Football (Soccer)', hobbies:'Diving, snorkeling, kitesurfing, beach volleyball', food:'Keshi yená (stuffed cheese), funchi, stobá stew',
+    language:'Papiamentu, Dutch & English', deepDive:'This tiny Caribbean island of just 150,000 people made history by qualifying for their first-ever World Cup. A true underdog story — the whole island is celebrating.' },
+  { name:'Haiti', flag:'🇭🇹', code:'ht', region:'CONCACAF', continent:'Caribbean',
+    funEmoji:'🎨', funFact:'Haiti is famous for its vibrant, colorful art — Haitian paintings are collected in museums around the world.',
+    sport:'Football (Soccer)', hobbies:'Music (kompa), painting, dancing, dominoes', food:'Griot (fried pork), rice and beans, pikliz spicy slaw',
+    language:'Haitian Creole & French', deepDive:'Haiti\'s only other World Cup was in 1974. This return is deeply emotional for the island nation, which has faced enormous challenges in recent years. Their supporters are among the most passionate in the world.' },
+  { name:'Panama', flag:'🇵🇦', code:'pa', region:'CONCACAF', continent:'Central America',
+    funEmoji:'🚢', funFact:'The Panama Canal connects two oceans and is one of the greatest engineering feats in human history.',
+    sport:'Baseball', hobbies:'Baseball, surfing, diving, cumbia dancing', food:'Sancocho soup, ceviche, patacones, ropa vieja',
+    language:'Spanish', deepDive:'Panama qualified despite being a small nation of just 4 million people. They play with incredible heart and are known for their tough, physical style of football.' },
+
+  // CONMEBOL
+  { name:'Argentina', flag:'🇦🇷', code:'ar', region:'CONMEBOL', continent:'South America',
+    funEmoji:'🏆', funFact:'Argentina is the defending World Cup champion, led by the greatest player of all time — Lionel Messi.',
+    sport:'Football (Soccer)', hobbies:'Tango dancing, polo, mate tea drinking, asado BBQ', food:'Asado, empanadas, medialunas, dulce de leche',
+    language:'Spanish', deepDive:'Argentina won the 2022 World Cup in the most dramatic final in history. Messi, now in his 40s, is likely playing his last World Cup. Can they become the first back-to-back champions since Brazil in 1962?' },
+  { name:'Brazil', flag:'🇧🇷', code:'br', region:'CONMEBOL', continent:'South America',
+    funEmoji:'🌴', funFact:'Brazil has won the World Cup 5 times — more than any other country in the world.',
+    sport:'Football (Soccer)', hobbies:'Capoeira martial art, Carnival dancing, beach volleyball, surfing', food:'Feijoada stew, pão de queijo, brigadeiro, açaí',
+    language:'Portuguese', deepDive:'Brazil is the only country to have participated in every single World Cup. Their jogo bonito (beautiful game) style of football is famous worldwide. They last won in 2002 and are desperate to end that drought.' },
+  { name:'Colombia', flag:'🇨🇴', code:'co', region:'CONMEBOL', continent:'South America',
+    funEmoji:'☕', funFact:'Colombia produces some of the world\'s most famous coffee — and has incredible biodiversity.',
+    sport:'Football (Soccer)', hobbies:'Vallenato music, cycling, salsa dancing, tejo', food:'Bandeja paisa, arepas, sancocho, ajiaco',
+    language:'Spanish', deepDive:'Colombia has never made it past the quarter-finals but they always play exciting, attack-minded football. Their fans bring incredible music and colour to every stadium.' },
+  { name:'Ecuador', flag:'🇪🇨', code:'ec', region:'CONMEBOL', continent:'South America',
+    funEmoji:'🐢', funFact:'Ecuador is home to the Galápagos Islands — where Charles Darwin developed his theory of evolution.',
+    sport:'Football (Soccer)', hobbies:'Chaza ball, cycling, hiking the Andes, artisan crafts', food:'Ceviche, llapingachos, seco de pollo, canelazo',
+    language:'Spanish', deepDive:'Ecuador plays one of the matches you\'ll be attending! They face Germany on June 22 at MetLife. They\'re known for their energetic, high-press style of play.' },
+  { name:'Uruguay', flag:'🇺🇾', code:'uy', region:'CONMEBOL', continent:'South America',
+    funEmoji:'🥩', funFact:'Uruguay was the first-ever FIFA World Cup champion, winning the inaugural tournament in 1930 on home soil.',
+    sport:'Football (Soccer)', hobbies:'Asado BBQ, candombe drumming, horse racing, mate', food:'Asado, chivito sandwich, milanesa, alfajores',
+    language:'Spanish', deepDive:'Don\'t be fooled by their small population of 3.5 million — Uruguay punches WAY above its weight in football. They\'ve won two World Cups and are always dangerous.' },
+  { name:'Paraguay', flag:'🇵🇾', code:'py', region:'CONMEBOL', continent:'South America',
+    funEmoji:'🎸', funFact:'Paraguay is the only country in the world with a bilingual national anthem — sung in both Spanish and Guaraní.',
+    sport:'Football (Soccer)', hobbies:'Ñandutí lacemaking, harp music, fishing, arandu (traditional games)', food:'Sopa paraguaya (cornbread), chipa, asado',
+    language:'Spanish & Guaraní', deepDive:'Paraguay is famous for their incredibly strong defensive record in World Cups — they once went 5 matches without conceding a goal. Hard to beat.' },
+  { name:'Bolivia', flag:'🇧🇴', code:'bo', region:'CONMEBOL', continent:'South America',
+    funEmoji:'🏔️', funFact:'Bolivia has two capital cities — and their home stadium in La Paz is so high in the mountains that visitors get altitude sickness!',
+    sport:'Football (Soccer)', hobbies:'Cholita wrestling, weaving textiles, Diablada dance', food:'Salteñas, fricasé pork stew, api drink, api morado',
+    language:'Spanish + 36 indigenous languages', deepDive:'Bolivia qualified through the intercontinental playoffs. They play their home games at altitude (3,600m above sea level!) making them notoriously difficult to beat at home.' },
+  { name:'Venezuela', flag:'🇻🇪', code:'ve', region:'CONMEBOL', continent:'South America',
+    funEmoji:'⚾', funFact:'Venezuela has sent more players to Major League Baseball than any country outside the USA and Dominican Republic.',
+    sport:'Baseball', hobbies:'Baseball, joropo dance, hammock-making, beach sports', food:'Arepas, pabellón criollo, cachapas, hallacas',
+    language:'Spanish', deepDive:'Venezuela qualifying for the World Cup would be a historic first. Their football program has improved dramatically and they have exciting young talent ready to show the world.' },
+
+  // AFRICA
+  { name:'Algeria', flag:'🇩🇿', code:'dz', region:'CAF', continent:'Africa',
+    funEmoji:'🏜️', funFact:'Algeria contains about 80% of the Sahara Desert — the largest hot desert on Earth.',
+    sport:'Football (Soccer)', hobbies:'Rai music, chess, traditional wrestling, horse riding', food:'Couscous, tajine, merguez, chakhchoukha',
+    language:'Arabic & Berber', deepDive:'Algeria won the Africa Cup of Nations in 2019 with spectacular football. Their passionate fans — known as Les Fennecs — are among the most vocal in the world.' },
+  { name:'Cape Verde', flag:'🇨🇻', code:'cv', region:'CAF', continent:'Africa',
+    funEmoji:'🎵', funFact:'Cape Verde is a tiny Atlantic island nation famous for birthing morna music — a deeply emotional genre listed on UNESCO\'s Cultural Heritage.',
+    sport:'Football (Soccer)', hobbies:'Morna and coladeira music, fishing, beach sports', food:'Cachupa stew, grogue sugarcane spirit, pastel com diabo dentro',
+    language:'Portuguese & Cape Verdean Creole', deepDive:'These small islands of just 500,000 people have risen to become a serious African football nation. Their Blue Sharks play with energy and hunger and have nothing to lose.' },
+  { name:'Egypt', flag:'🇪🇬', code:'eg', region:'CAF', continent:'Africa',
+    funEmoji:'🛸', funFact:'Egypt is home to the only one of the Seven Wonders of the Ancient World still standing — the Great Pyramid of Giza.',
+    sport:'Football (Soccer)', hobbies:'Backgammon, dabke dance, falconry, Nile cruising', food:'Koshari, ful medames, ta\'ameya, molokhia',
+    language:'Arabic', deepDive:'Egypt is the most successful nation in Africa Cup of Nations history with 7 titles. Mohamed Salah — one of the best players alive — leads this team and will be desperate to perform on the biggest stage.' },
+  { name:'Ghana', flag:'🇬🇭', code:'gh', region:'CAF', continent:'Africa',
+    funEmoji:'🥁', funFact:'Ghana was the first sub-Saharan African country to qualify for the World Cup and came agonizingly close to a semi-final in 2010.',
+    sport:'Football (Soccer)', hobbies:'Drumming, kente weaving, Azonto dance, oware board game', food:'Jollof rice, fufu, kelewele, waakye',
+    language:'English (+ Twi, Hausa, and others)', deepDive:'Ghana came within a penalty kick of the World Cup semi-finals in 2010 — one of the most heartbreaking moments in World Cup history. They are always a team that plays with pace and physicality.' },
+  { name:'Ivory Coast', flag:'🇨🇮', code:'ci', region:'CAF', continent:'Africa',
+    funEmoji:'🍫', funFact:'Ivory Coast produces more cocoa beans than any other country in the world — about 40% of the global supply.',
+    sport:'Football (Soccer)', hobbies:'Zouglou dance, traditional mask ceremonies, djembe drumming', food:'Attiéké, sauce graine, aloko fried plantains',
+    language:'French', deepDive:'Ivory Coast has had one of Africa\'s most talented generations ever, featuring legends like Didier Drogba (now retired). The current team carries that legacy and plays with incredible attacking flair.' },
+  { name:'Morocco', flag:'🇲🇦', code:'ma', region:'CAF', continent:'Africa',
+    funEmoji:'🌟', funFact:'Morocco reached the semi-finals of the 2022 World Cup — the best-ever finish for an African or Arab nation in World Cup history.',
+    sport:'Football (Soccer)', hobbies:'Gnawa music, fantasia horse riding, hammam baths, zellige tilework', food:'Tagine, couscous, pastilla, mint tea',
+    language:'Arabic, Berber & French', deepDive:'Morocco\'s 2022 semi-final run was one of the greatest stories in World Cup history. They beat Spain and Portugal along the way! Their Atlas Lions style — organized, fast, and passionate — makes them one of the most exciting teams to watch.' },
+  { name:'Senegal', flag:'🇸🇳', code:'sn', region:'CAF', continent:'Africa',
+    funEmoji:'🦁', funFact:'Senegal is the reigning Africa Cup of Nations champion and has the best player in Africa — Sadio Mané.',
+    sport:'Laamb Wrestling', hobbies:'Laamb traditional wrestling, sabar drumming, teranga hospitality culture', food:'Thieboudienne fish rice, yassa chicken, mafé',
+    language:'French & Wolof', deepDive:'Senegal reached the quarter-finals in 2002 and are one of Africa\'s most consistent teams. Sadio Mané is a hero at home and a world-class player. Their fans bring incredible energy and their teranga (hospitality) culture makes them everyone\'s second favourite team.' },
+  { name:'South Africa', flag:'🇿🇦', code:'za', region:'CAF', continent:'Africa',
+    funEmoji:'🦏', funFact:'South Africa hosted the 2010 World Cup — the first ever held on the African continent — and invented the vuvuzela.',
+    sport:'Rugby Union', hobbies:'Safari, braai BBQ, surfing, Cape Winelands visits', food:'Biltong, bobotie, boerewors, pap',
+    language:'11 official languages including Zulu, Xhosa & Afrikaans', deepDive:'Bafana Bafana (The Boys The Boys) are playing in their first World Cup since they hosted in 2010. The whole continent will be behind them. Their vuvuzela-blowing fans are impossible to ignore.' },
+  { name:'Tunisia', flag:'🇹🇳', code:'tn', region:'CAF', continent:'Africa',
+    funEmoji:'🏺', funFact:'Tunisia is home to the ancient ruins of Carthage — once one of the most powerful cities in the world.',
+    sport:'Football (Soccer)', hobbies:'Pottery, olive harvesting, maluf music, horse racing', food:'Harissa, brik pastry, couscous, lablabi chickpea soup',
+    language:'Arabic', deepDive:'Tunisia are known as The Eagles of Carthage. They were the first African team to win a World Cup match back in 1978 and have been regular qualifiers ever since. They play hard-working, tactical football.' },
+  { name:'DR Congo', flag:'🇨🇩', code:'cd', region:'CAF', continent:'Africa',
+    funEmoji:'🦍', funFact:'DR Congo\'s Congo Basin is the world\'s second largest rainforest — the "lungs of Africa".',
+    sport:'Football (Soccer)', hobbies:'Soukous and rumba music, djembe drumming, fishing', food:'Poulet à la moambe, fufu, saka-saka (cassava leaves)',
+    language:'French (+ Lingala, Swahili and others)', deepDive:'DR Congo qualified through the intercontinental playoffs, their first World Cup since 1974 (when they were known as Zaire). They have a proud footballing tradition and incredible raw talent.' },
+
+  // ASIA
+  { name:'Australia', flag:'🇦🇺', code:'au', region:'AFC', continent:'Oceania',
+    funEmoji:'🦘', funFact:'Australia has more venomous creatures than anywhere on Earth — and the world\'s largest cattle station (bigger than Belgium!).',
+    sport:'Australian Rules Football', hobbies:'Surfing, cricket, BBQ (called "barbie"), beach life', food:'Meat pie, Tim Tams, Vegemite on toast, lamingtons',
+    language:'English', deepDive:'The Socceroos reached the quarter-finals in 2006 and the round of 16 in 2022. They\'re always a hardworking, direct team with a point to prove on the world stage.' },
+  { name:'Iran', flag:'🇮🇷', code:'ir', region:'AFC', continent:'Asia',
+    funEmoji:'🏛️', funFact:'Iran (ancient Persia) is one of the oldest civilizations on Earth — over 7,000 years of continuous history.',
+    sport:'Football (Soccer) & Wrestling', hobbies:'Backgammon, Persian poetry, bazaar shopping, skiing in the Alborz mountains', food:'Ghormeh sabzi, kebab, saffron rice, tahdig',
+    language:'Persian (Farsi)', deepDive:'Iran is the most successful team in Asian football history, having qualified for the World Cup more times than any other Asian nation. Team Melli play a physical, organized style and are always hard to beat.' },
+  { name:'Japan', flag:'🇯🇵', code:'jp', region:'AFC', continent:'Asia',
+    funEmoji:'🗻', funFact:'Japan was the FIRST country to qualify for the 2026 World Cup — and they always clean up the stadium after their games, even at the World Cup.',
+    sport:'Baseball & Sumo', hobbies:'Manga reading, karaoke, origami, martial arts, gaming', food:'Sushi, ramen, tempura, takoyaki, mochi',
+    language:'Japanese', deepDive:'Japan has become a serious football nation. They knocked Germany and Spain out in 2022 and their players are now stars in Europe\'s top leagues. The Samurai Blue are one of Asia\'s most exciting teams.' },
+  { name:'Jordan', flag:'🇯🇴', code:'jo', region:'AFC', continent:'Asia',
+    funEmoji:'🌹', funFact:'Jordan is home to the ancient rock-carved city of Petra — one of the New Seven Wonders of the World.',
+    sport:'Football (Soccer)', hobbies:'Horse riding, dead sea swimming, falconry, chess', food:'Mansaf (lamb in yoghurt sauce), maqluba, knafeh, falafel',
+    language:'Arabic', deepDive:'Jordan is making their first-ever World Cup appearance — a massive achievement for the tiny nation! Playing in the tournament for the first time is a historic moment for Jordanian football.' },
+  { name:'Qatar', flag:'🇶🇦', code:'qa', region:'AFC', continent:'Asia',
+    funEmoji:'🌅', funFact:'Qatar hosted the 2022 World Cup and is the richest country per capita in the world, sitting on vast natural gas reserves.',
+    sport:'Football (Soccer) & Camel Racing', hobbies:'Camel racing, falconry, pearl diving, dhow sailing', food:'Machboos spiced rice, harees, luqaimat, gahwa coffee',
+    language:'Arabic', deepDive:'Qatar\'s 2022 home World Cup was famously underwhelming for the hosts — they became the first host nation to be eliminated in the group stage. They\'ll be desperate to prove themselves as genuine competitors this time.' },
+  { name:'Saudi Arabia', flag:'🇸🇦', code:'sa', region:'AFC', continent:'Asia',
+    funEmoji:'🌴', funFact:'Saudi Arabia pulled off one of the greatest World Cup upsets ever — beating Argentina 2-1 in the 2022 group stage!',
+    sport:'Football (Soccer) & Falconry', hobbies:'Falconry, camel racing, dune bashing, traditional sword dances', food:'Kabsa rice dish, mandi slow-cooked lamb, mutabbaq, qahwa',
+    language:'Arabic', deepDive:'That 2022 win over Argentina (the eventual champions!) was one of the greatest shocks in World Cup history. Saudi Arabia has been investing heavily in football and their league now attracts world stars like Ronaldo and Neymar.' },
+  { name:'South Korea', flag:'🇰🇷', code:'kr', region:'AFC', continent:'Asia',
+    funEmoji:'🏆', funFact:'South Korea co-hosted the 2002 World Cup and reached the semi-finals — the best result ever for an Asian team.',
+    sport:'Taekwondo & Baseball', hobbies:'K-pop, gaming (esports), hiking, badminton', food:'Kimchi, bibimbap, Korean BBQ, tteokbokki, ramyeon',
+    language:'Korean', deepDive:'South Korea\'s 2002 semi-final run is one of football\'s greatest stories. They beat Spain, Italy and Germany on the way! Son Heung-min (one of the world\'s best players) leads the current team as they look to recreate that magic.' },
+  { name:'Uzbekistan', flag:'🇺🇿', code:'uz', region:'AFC', continent:'Asia',
+    funEmoji:'🕌', funFact:'Uzbekistan is home to Samarkand — one of the most beautiful and ancient cities on the Silk Road trading route.',
+    sport:'Football (Soccer) & Wrestling', hobbies:'Silk weaving, plov cooking festivals, kurash wrestling, chess', food:'Plov (rice dish), samsa, shashlik kebab, lagman noodles',
+    language:'Uzbek', deepDive:'Making their first-ever World Cup appearance! Uzbekistan\'s squad is managed by Italian World Cup-winning captain Fabio Cannavaro. Their star player Abdukodir Khusanov plays for Manchester City in England.' },
+  { name:'Iraq', flag:'🇮🇶', code:'iq', region:'AFC', continent:'Asia',
+    funEmoji:'🏛️', funFact:'Iraq is home to ancient Mesopotamia — often called "the cradle of civilization," where writing was invented over 5,000 years ago.',
+    sport:'Football (Soccer)', hobbies:'Mesopotamian chess, fishing, traditional music, qahwa coffee culture', food:'Masgouf grilled fish, kubba, tashreeb, kleicha cookies',
+    language:'Arabic & Kurdish', deepDive:'Iraq\'s last World Cup was in 1986 — that\'s a 40-year gap! They qualified through the intercontinental playoffs in dramatic fashion. The whole country erupted in celebration when they qualified.' },
+
+  // EUROPE
+  { name:'England', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', code:'gb-eng', region:'UEFA', continent:'Europe',
+    funEmoji:'☕', funFact:'England invented football (soccer) in the 1800s — and has been trying to win the World Cup ever since their only title in 1966.',
+    sport:'Football (Soccer) & Cricket', hobbies:'Pub culture, cricket, gardening, Premier League football watching', food:'Fish and chips, Sunday roast, beans on toast, Yorkshire pudding',
+    language:'English', deepDive:'England invented the game but has only won it once (1966). Every tournament brings fresh hope and fresh heartbreak — famously through penalty shootouts. With Bellingham, Kane and Foden, this might finally be their year.' },
+  { name:'France', flag:'🇫🇷', code:'fr', region:'UEFA', continent:'Europe',
+    funEmoji:'🗼', funFact:'France is the most visited country in the world — over 100 million tourists a year come to see the Eiffel Tower, wine regions, and incredible cuisine.',
+    sport:'Football (Soccer)', hobbies:'Cycling (Tour de France), boules/pétanque, wine tasting, fashion', food:'Baguette, croissant, coq au vin, crème brûlée, cheese',
+    language:'French', deepDive:'France won the World Cup in 1998 and 2018. They are the defending European runners-up and one of the favourites this time. Their squad is stacked with world-class talent and they always perform at major tournaments.' },
+  { name:'Germany', flag:'🇩🇪', code:'de', region:'UEFA', continent:'Europe',
+    funEmoji:'🍺', funFact:'Germany has won the World Cup 4 times and has reached the final or semi-final in almost every tournament they\'ve entered.',
+    sport:'Football (Soccer)', hobbies:'Oktoberfest, hiking, Christmas markets, cycling, sausage festivals', food:'Bratwurst, pretzels, schnitzel, sauerkraut, Black Forest cake',
+    language:'German', deepDive:'You\'ll see Germany play on June 22 at MetLife! They\'re ranked 3rd in the world and have an incredibly exciting young team led by Florian Wirtz and Jamal Musiala. A team with history, talent, and real hunger to win.' },
+  { name:'Norway', flag:'🇳🇴', code:'no', region:'UEFA', continent:'Europe',
+    funEmoji:'🌌', funFact:'Norway can see the Northern Lights (Aurora Borealis) in winter, and experiences the Midnight Sun in summer — 24 hours of daylight!',
+    sport:'Cross-Country Skiing', hobbies:'Skiing, hiking, fjord kayaking, Northern Lights chasing, fishing', food:'Gravlaks salmon, lefse flatbread, brunost brown cheese, fårikål lamb',
+    language:'Norwegian', deepDive:'Norway hasn\'t been to a World Cup since 1998 — a 28-year wait finally over! And they\'re led by Erling Haaland, who scored 16 goals in qualifying — one of the most dominant strikers on the planet. Everyone will be watching Norway.' },
+  { name:'Portugal', flag:'🇵🇹', code:'pt', region:'UEFA', continent:'Europe',
+    funEmoji:'🐓', funFact:'Portugal is the oldest country in Europe with unchanged borders — established in 1139. And Cristiano Ronaldo holds the record for most international goals ever.',
+    sport:'Football (Soccer)', hobbies:'Surfing, fado music, tile painting (azulejo), cork crafts', food:'Pastel de nata, bacalhau cod, piri-piri chicken, bifana',
+    language:'Portuguese', deepDive:'You\'ll see Portugal play on June 24 at MetLife! Cristiano Ronaldo — possibly the greatest player ever — is likely in his final World Cup. Can he finally win the one trophy that has escaped him? Portugal have genuine world-class talent throughout the squad.' },
+  { name:'Spain', flag:'🇪🇸', code:'es', region:'UEFA', continent:'Europe',
+    funEmoji:'💃', funFact:'Spain won the World Cup in 2010 and dominated world football for over a decade, winning Euro 2024 too.',
+    sport:'Football (Soccer)', hobbies:'Flamenco dancing, bullfighting, siesta culture, La Tomatina festival, tapas', food:'Paella, tapas, jamón, tortilla española, churros',
+    language:'Spanish (Castilian)', deepDive:'Spain won Euro 2024 in spectacular fashion with the youngest team in the tournament. Their tiki-taka possession style is still beautiful to watch, and they have an extraordinary group of young talents led by Lamine Yamal and Pedri.' },
+  { name:'Netherlands', flag:'🇳🇱', code:'nl', region:'UEFA', continent:'Europe',
+    funEmoji:'🌷', funFact:'The Netherlands has 23 million bicycles for 17 million people — more bikes than people!',
+    sport:'Football (Soccer) & Cycling', hobbies:'Cycling, tulip growing, ice skating, Sinterklaas traditions', food:'Stroopwafel, herring, Dutch pancakes, bitterballen, gouda cheese',
+    language:'Dutch', deepDive:'The Dutch — known as the Oranje — have never won a World Cup despite reaching the final three times! They play an attractive, direct style and have incredible recent talent including Virgil van Dijk and Cody Gakpo.' },
+  { name:'Croatia', flag:'🇭🇷', code:'hr', region:'UEFA', continent:'Europe',
+    funEmoji:'🏝️', funFact:'Croatia is famous for having over 1,000 islands along its stunning Adriatic coastline.',
+    sport:'Football (Soccer)', hobbies:'Klapa singing, sailing, picigin beach water sport, truffle hunting', food:'Peka slow-cooked meat, black risotto, burek, structure pastry', 
+    language:'Croatian', deepDive:'A tiny country of just 4 million people that reached the World Cup final in 2018 and semi-final in 2022. Luka Modrić — widely considered one of the greatest midfielders ever — may be playing his last World Cup.' },
+  { name:'Switzerland', flag:'🇨🇭', code:'ch', region:'UEFA', continent:'Europe',
+    funEmoji:'⌚', funFact:'Switzerland makes about 95% of the world\'s luxury watches and has been neutral in every war for over 200 years.',
+    sport:'Football (Soccer) & Alpine Skiing', hobbies:'Skiing, yodeling, hiking, fondue making, watch collecting', food:'Fondue, raclette, rösti, Toblerone chocolate, Gruyère cheese',
+    language:'German, French, Italian & Romansh', deepDive:'Switzerland consistently punches above their weight, regularly reaching the knockout rounds. They\'re incredibly well-organized tactically and always tough to beat.' },
+  { name:'Scotland', flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', code:'gb-sct', region:'UEFA', continent:'Europe',
+    funEmoji:'🏴', funFact:'Scotland actually INVENTED golf! St Andrews, the "Home of Golf," has been played on since the 15th century.',
+    sport:'Football (Soccer) & Golf', hobbies:'Highland Games, bagpipe music, ceilidh dancing, whisky distillery tours', food:'Haggis, cullen skink, deep-fried Mars bars, shortbread',
+    language:'English & Scottish Gaelic', deepDive:'Scotland were back at the Euros in 2024 and now make their first World Cup since 1998. They have passionate, incredible fans — the Tartan Army — who are famous for being the friendliest supporters in the world.' },
+  { name:'Austria', flag:'🇦🇹', code:'at', region:'UEFA', continent:'Europe',
+    funEmoji:'🎻', funFact:'Austria is the birthplace of Mozart, Beethoven\'s inspiration, and has more opera houses per capita than any country in the world.',
+    sport:'Alpine Skiing', hobbies:'Skiing, Mozart concerts, café culture, mountain hiking, lederhosen festivals', food:'Wiener Schnitzel, sachertorte, apfelstrudel, kaiserschmarrn',
+    language:'German', deepDive:'Austria reached the quarter-finals of Euro 2024 in a surprise run. They play an exciting, attacking style and have a talented, hungry young squad. Don\'t sleep on Austria!' },
+  { name:'Belgium', flag:'🇧🇪', code:'be', region:'UEFA', continent:'Europe',
+    funEmoji:'🍫', funFact:'Belgium is said to produce the finest chocolate in the world and has more Michelin-starred restaurants per capita than France!',
+    sport:'Football (Soccer) & Cycling', hobbies:'Beer tasting (500+ types of beer!), cycling, waffles, comic book collecting', food:'Belgian waffles, moules-frites, chocolate, speculoos, carbonade flamande',
+    language:'Dutch, French & German', deepDive:'Belgium had the "Golden Generation" — Hazard, De Bruyne, Lukaku — that reached the World Cup semi-final in 2018. That era is ending, and a new generation is stepping up. De Bruyne is one of the best players in the world.' },
+  { name:'Bosnia & Herzegovina', flag:'🇧🇦', code:'ba', region:'UEFA', continent:'Europe',
+    funEmoji:'🌉', funFact:'Sarajevo hosted the 1984 Winter Olympics and is famous for the Stari Most bridge — a UNESCO World Heritage Site.',
+    sport:'Football (Soccer)', hobbies:'Sevdalinka folk music, rafting on the Neretva, traditional coffee culture, bridge diving', food:'Ćevapi (grilled meat), burek, bosanski lonac stew, baklava',
+    language:'Bosnian, Croatian & Serbian', deepDive:'Bosnia knocked out Italy in the UEFA playoffs — a massive upset! It\'s a country that has been through enormous hardship and their football team represents pride and joy for the whole nation. They play with heart and physicality.' },
+  { name:'Sweden', flag:'🇸🇪', code:'se', region:'UEFA', continent:'Europe',
+    funEmoji:'🌲', funFact:'Sweden has more islands than any country in Europe — over 220,000 — and the sun barely sets in summer (the "Midnight Sun").',
+    sport:'Ice Hockey', hobbies:'ABBA, IKEA flat-pack building, midsommar festivals, fika coffee breaks', food:'Meatballs (köttbullar), gravlax, surströmming, cinnamon buns',
+    language:'Swedish', deepDive:'Sweden beat Poland 3-2 in a thrilling playoff to qualify. Zlatan Ibrahimović — Sweden\'s greatest ever player — is retired, but a new generation is ready. They\'re always hard-working, physical, and difficult to beat.' },
+  { name:'Türkiye', flag:'🇹🇷', code:'tr', region:'UEFA', continent:'Europe/Asia',
+    funEmoji:'🕌', funFact:'Istanbul is the only city in the world that spans two continents — Europe and Asia — separated by the Bosphorus strait.',
+    sport:'Football (Soccer) & Oil Wrestling', hobbies:'Turkish oil wrestling, bazaar shopping, Turkish baths (hammam), backgammon', food:'Kebab, baklava, Turkish delight, börek, dolma',
+    language:'Turkish', deepDive:'Turkey reached the semi-finals of Euro 2024 and are in red-hot form. They qualified through the UEFA playoffs and play exciting, technically gifted football. Their fans are incredibly passionate.' },
+  { name:'Czechia', flag:'🇨🇿', code:'cz', region:'UEFA', continent:'Europe',
+    funEmoji:'🍺', funFact:'Czech Republic (Czechia) drinks more beer per person than any other country in the world.',
+    sport:'Ice Hockey & Football', hobbies:'Mushroom foraging, hiking, beer garden culture, Bohemian glass crafts', food:'Svíčková beef sirloin, goulash, trdelník pastry, pickled cheese',
+    language:'Czech', deepDive:'Czechia knocked out Denmark — a team ranked 20 places above them — on penalties in the UEFA playoffs. They are always an organized, technically solid team that makes the most of limited resources.' },
+
+  // OCEANIA
+  { name:'New Caledonia', flag:'🇳🇨', code:'nc', region:'OFC', continent:'Oceania',
+    funEmoji:'🐠', funFact:'New Caledonia is a French Pacific island territory home to one of the world\'s largest lagoons, a UNESCO World Heritage Site.',
+    sport:'Football (Soccer)', hobbies:'Outrigger canoe racing, spearfishing, kanak traditional ceremonies', food:'Bougna (taro and chicken in banana leaves), coconut crab, French pastries',
+    language:'French & 30 Kanak languages', deepDive:'Making their FIRST-EVER World Cup appearance! New Caledonia is a tiny French island territory in the Pacific with just 270,000 people. They qualified through the OFC (Oceania) zone. This is a miracle for their small football federation.' },
+];
+
+// Group by region for display
+const regionOrder = ['CONCACAF','CONMEBOL','CAF','AFC','UEFA','OFC'];
+const regionNames = {
+  'CONCACAF': '🌎 North & Central America',
+  'CONMEBOL': '🌎 South America',
+  'CAF': '🌍 Africa',
+  'AFC': '🌏 Asia',
+  'UEFA': '🌍 Europe',
+  'OFC': '🌊 Oceania'
 };
-function openDrawer(id) {
-  const data = drawerData[id];
-  if (!data) return;
-  document.getElementById('drawer-date').textContent = data.date;
-  document.getElementById('drawer-title').textContent = data.title;
-  const body = document.getElementById('drawer-body');
-  body.innerHTML = data.rows.map(r => `
-    <div class="drawer-row">
-      <div class="drawer-row-icon">${r.icon}</div>
-      <div>
-        <div class="drawer-row-label">${r.label}</div>
-        <div class="drawer-row-value">${r.value}</div>
+
+function buildNationsGrid(filter) {
+  const container = document.getElementById('nations-container');
+  container.innerHTML = '';
+  const filtered = filter
+    ? nations.filter(n => n.name.toLowerCase().includes(filter.toLowerCase()))
+    : nations;
+
+  if (filter) {
+    // flat grid when searching
+    const grid = document.createElement('div');
+    grid.className = 'nation-grid';
+    grid.style.paddingTop = '12px';
+    filtered.forEach(n => grid.appendChild(makeNationCard(n)));
+    container.appendChild(grid);
+  } else {
+    regionOrder.forEach(region => {
+      const regionNations = filtered.filter(n => n.region === region);
+      if (!regionNations.length) return;
+      const label = document.createElement('div');
+      label.className = 'region-label';
+      label.textContent = regionNames[region];
+      container.appendChild(label);
+      const grid = document.createElement('div');
+      grid.className = 'nation-grid';
+      regionNations.forEach(n => grid.appendChild(makeNationCard(n)));
+      container.appendChild(grid);
+    });
+  }
+}
+
+function makeNationCard(n) {
+  const isHeritage = HERITAGE.includes(n.name);
+  const card = document.createElement('div');
+  card.className = 'nation-card' + (isHeritage ? ' heritage' : '');
+  card.onclick = () => openNationDrawer(n);
+  card.innerHTML = `
+    ${isHeritage ? '<div class="heritage-ribbon">★ Family</div>' : ''}
+    <img class="nation-flag-img"
+      src="https://flagcdn.com/w80/${n.code}.png"
+      alt="Flag of ${n.name}"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
+    <span class="nation-flag-emoji-fallback" style="display:none;">${n.flag}</span>
+    <div class="nation-name">${n.name}</div>
+  `;
+  return card;
+}
+
+function filterNations(val) {
+  buildNationsGrid(val.trim());
+}
+
+function openNationDrawer(n) {
+  const isHeritage = HERITAGE.includes(n.name);
+  const flagImgCode = n.code;
+  let html = `
+    <div style="position:relative;">
+      <img src="https://flagcdn.com/w640/${flagImgCode}.png" alt="Flag of ${n.name}"
+        style="width:100%;height:160px;object-fit:cover;"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+      <div style="display:none;width:100%;height:160px;align-items:center;justify-content:center;font-size:80px;background:#f5f5f5;">${n.flag}</div>
+    </div>
+    <div style="padding:14px 20px 10px;">
+      <div class="nation-drawer-name">${n.flag} ${n.name}</div>
+      <div class="nation-drawer-sub">${n.continent} · ${n.region}</div>
+      ${isHeritage ? '<div class="nation-heritage-badge">★ Family Heritage Country</div>' : ''}
+    </div>
+    <div class="nation-drawer-fact">
+      <span class="nation-drawer-fact-emoji">${n.funEmoji}</span>
+      ${n.funFact}
+    </div>
+    <div class="nation-info-rows">
+      <div class="nation-info-row">
+        <div class="nation-info-icon">⚽</div>
+        <div><div class="nation-info-label">National Sport</div><div class="nation-info-value">${n.sport}</div></div>
+      </div>
+      <div class="nation-info-row">
+        <div class="nation-info-icon">🎨</div>
+        <div><div class="nation-info-label">Cultural Hobbies & Traditions</div><div class="nation-info-value">${n.hobbies}</div></div>
+      </div>
+      <div class="nation-info-row">
+        <div class="nation-info-icon">🍽️</div>
+        <div><div class="nation-info-label">Famous Foods</div><div class="nation-info-value">${n.food}</div></div>
+      </div>
+      <div class="nation-info-row">
+        <div class="nation-info-icon">🗣️</div>
+        <div><div class="nation-info-label">Language</div><div class="nation-info-value">${n.language}</div></div>
       </div>
     </div>
-  `).join('');
-  // Clear any previously injected badge
-  const existing = document.querySelector('.drawer-badge');
-  if (existing) existing.remove();
-  if (data.badge) {
-    const b = document.createElement('div');
-    b.className = `drawer-badge ${data.badge.cls}`;
-    b.textContent = data.badge.text;
-    document.getElementById('drawer-title').after(b);
-  }
-  const overlay = document.getElementById('cell-drawer-overlay');
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
+    <div style="padding: 0 20px 8px;">
+      <div class="nation-deep-label">⚽ World Cup Story</div>
+      <div class="nation-deep-dive">${n.deepDive}</div>
+    </div>
+    <div class="safe-bottom"></div>
+  `;
+  document.getElementById('nationDrawerContent').innerHTML = html;
+  document.getElementById('nationDrawer').classList.add('open');
+  document.getElementById('nationOverlay').classList.add('open');
 }
 
-function closeDrawer() {
-  document.getElementById('cell-drawer-overlay').classList.remove('open');
-  document.body.style.overflow = '';
+function closeNationDrawer() {
+  document.getElementById('nationDrawer').classList.remove('open');
+  document.getElementById('nationOverlay').classList.remove('open');
 }
 
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('cell-drawer-overlay')) closeDrawer();
-}
+// Init
+buildNationsGrid();
+document.querySelector('.day-card').classList.add('open');
 </script>
 </body>
 </html>
