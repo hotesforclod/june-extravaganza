@@ -533,6 +533,82 @@ body {
   .teams-row { padding: 14px 10px; }
   .team-flag { font-size: 32px; }
 }
+
+/* ===== PICK YOUR NATION ===== */
+.nation-header { background: var(--navy); padding: 16px; text-align: center; }
+.nation-header-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--white); }
+.nation-header-sub { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 4px; }
+.nation-search-wrap { padding: 12px 16px 8px; background: var(--white); position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border); }
+.nation-search { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 14px; font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--text); outline: none; }
+.nation-search:focus { border-color: var(--navy); }
+.region-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); padding: 14px 16px 6px; }
+.nation-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 16px 16px; }
+.nation-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 8px 10px; text-align: center; cursor: pointer; transition: transform 0.15s; position: relative; overflow: hidden; }
+.nation-card:active { transform: scale(0.96); }
+.nation-card.heritage { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-light), 0 2px 8px rgba(212,168,67,0.2); }
+.heritage-ribbon { position: absolute; top: 0; right: 0; background: var(--gold); color: white; font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 0 10px 0 6px; letter-spacing: 0.5px; text-transform: uppercase; }
+.nation-flag-img { width: 52px; height: 34px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 6px; border: 0.5px solid rgba(0,0,0,0.08); }
+.nation-flag-emoji-fallback { font-size: 32px; line-height: 1; display: block; margin-bottom: 6px; }
+.nation-name { font-size: 11px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.nation-drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.nation-drawer-overlay.open { opacity: 1; pointer-events: all; }
+.nation-drawer { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-radius: 20px 20px 0 0; z-index: 201; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.32,0.72,0,1); max-height: 88vh; overflow-y: auto; }
+.nation-drawer.open { transform: translateY(0); }
+.nation-drawer-topbar { display: flex; align-items: center; justify-content: center; padding: 12px 16px 0; position: relative; }
+.nation-drawer-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; }
+.nation-drawer-close { position: absolute; right: 16px; top: 8px; width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--border); color: var(--muted); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.nation-flag-hero { width: 100%; height: 160px; object-fit: cover; display: block; }
+.nation-flag-hero-fallback { width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; font-size: 80px; background: #f5f5f5; }
+.nation-drawer-info { padding: 14px 20px 10px; }
+.nation-drawer-name { font-size: 22px; font-weight: 700; color: var(--text); }
+.nation-drawer-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.nation-heritage-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--gold-light); color: var(--gold-dark); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-top: 6px; border: 1px solid var(--gold); }
+.nation-fun-fact { background: var(--navy); color: white; padding: 14px 20px; font-size: 14px; line-height: 1.6; }
+.nation-fun-fact-emoji { font-size: 22px; display: block; margin-bottom: 4px; }
+.nation-info-rows { padding: 4px 20px 16px; }
+.nation-info-row { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.nation-info-row:last-child { border-bottom: none; }
+.nation-info-icon { font-size: 18px; width: 26px; flex-shrink: 0; }
+.nation-info-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.nation-info-value { font-size: 14px; font-weight: 500; color: var(--text); margin-top: 2px; line-height: 1.5; }
+.nation-deep-wrap { padding: 0 20px 32px; }
+.nation-deep-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--sky); margin-bottom: 4px; }
+.nation-deep-dive { background: var(--sky-light); border-left: 3px solid var(--sky); padding: 10px 12px; border-radius: 0 8px 8px 0; font-size: 13px; color: #1a3a5c; line-height: 1.6; }
+
+/* ===== PARADE INTRO & IDEAS ===== */
+.parade-intro { margin: 16px 16px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.parade-intro-top { background: var(--navy); padding: 18px 20px 16px; }
+.parade-intro-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+.parade-intro-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: white; line-height: 1.3; margin-bottom: 6px; }
+.parade-intro-desc { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.6; }
+.parade-intro-steps { padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; }
+.parade-step { display: flex; gap: 12px; align-items: flex-start; }
+.parade-step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.parade-step-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+.parade-step-text strong { font-weight: 600; }
+.parade-torch-banner { margin: 0 16px 16px; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
+.parade-torch-flame { font-size: 32px; flex-shrink: 0; }
+.parade-torch-text { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.5; }
+.parade-torch-text strong { color: var(--gold); font-weight: 600; }
+.parade-workshop { margin: 0 16px 20px; background: var(--green-light); border: 1px solid rgba(26,107,60,0.2); border-radius: 12px; padding: 12px 16px; display: flex; gap: 12px; align-items: flex-start; }
+.parade-workshop-icon { font-size: 20px; flex-shrink: 0; }
+.parade-workshop-text { font-size: 13px; color: var(--green); line-height: 1.5; }
+.parade-workshop-text strong { font-weight: 600; }
+.parade-ideas-wrap { padding: 0 16px 32px; }
+.parade-ideas-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.parade-ideas-sub { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+.parade-idea-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+.parade-idea-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.parade-idea-icon { font-size: 22px; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.parade-idea-label { font-size: 14px; font-weight: 700; color: var(--text); }
+.parade-idea-items { display: flex; flex-direction: column; gap: 5px; }
+.parade-idea-item { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 12px; position: relative; }
+.parade-idea-item::before { content: '·'; position: absolute; left: 0; color: var(--muted); }
+.parade-idea-gobig { background: var(--navy); border-radius: 10px; padding: 12px 14px; margin-top: 8px; }
+.parade-idea-gobig-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+.parade-idea-gobig-items { display: flex; flex-direction: column; gap: 4px; }
+.parade-idea-gobig-item { font-size: 13px; color: rgba(255,255,255,0.8); line-height: 1.5; padding-left: 12px; position: relative; }
+.parade-idea-gobig-item::before { content: '✦'; position: absolute; left: 0; color: var(--gold); font-size: 9px; top: 3px; }
 </style>
 </head>
 <body>
@@ -550,11 +626,12 @@ body {
 
 <nav class="nav-tabs">
   <button class="tab-btn active" onclick="switchTab('schedule')">Schedule</button>
+  <button class="tab-btn" onclick="switchTab('nations')">🎌 Parade of Nations</button>
+  <button class="tab-btn" onclick="switchTab('broadway')">Broadway</button>
   <button class="tab-btn" onclick="switchTab('matches')">Matches</button>
   <button class="tab-btn" onclick="switchTab('squad')">The Squad</button>
-  <button class="tab-btn" onclick="switchTab('broadway')">Broadway</button>
-  <button class="tab-btn" onclick="switchTab('explore')">Explore NYC</button>
   <button class="tab-btn" onclick="switchTab('map')">Map</button>
+  <button class="tab-btn" onclick="switchTab('explore')">Explore NYC</button>
 </nav>
 
 <div class="app-body">
@@ -1399,6 +1476,139 @@ body {
   <div class="safe-bottom"></div>
 </div>
 
+
+<!-- PICK YOUR NATION TAB -->
+<div id="panel-nations" class="tab-panel">
+  <div class="nation-header">
+    <div class="nation-header-title">🎌 Parade of Nations</div>
+    <div class="nation-header-sub">Opening Ceremonies · June 21 · Sky Castle HQ</div>
+  </div>
+
+  <!-- INTRO CARD -->
+  <div class="parade-intro">
+    <div class="parade-intro-top">
+      <div class="parade-intro-eyebrow">June 21 · Opening Ceremonies</div>
+      <div class="parade-intro-title">Every great journey begins with a march.</div>
+      <div class="parade-intro-desc">The youngest generation will lead the way (Aurora, Alessandro, Hektor, Laiken, Aria, Arushka, Ksana). This is their moment. Each will pick a country, represent it with pride, and walk into the room as its ambassador.</div>
+    </div>
+    <div class="parade-intro-steps">
+      <div class="parade-step"><div class="parade-step-num">1</div><div class="parade-step-text"><strong>Pick your nation</strong> — browse the 48 countries below and choose the one that speaks to you.</div></div>
+      <div class="parade-step"><div class="parade-step-num">2</div><div class="parade-step-text"><strong>Prepare your representation</strong> — costume, flag, food, a chant, a fact. Make it yours. <a href="#parade-ideas" style="color:var(--gold);font-weight:600;text-decoration:none;">Ideas below ↓</a></div></div>
+      <div class="parade-step"><div class="parade-step-num">3</div><div class="parade-step-text"><strong>Get announced</strong> — each nation is called one by one. Walk in, own the room, represent your country.</div></div>
+      <div class="parade-step"><div class="parade-step-num">4</div><div class="parade-step-text"><strong>Take the stage together</strong> — all nations unite, and together light the family torch to open the June Extravaganza.</div></div>
+    </div>
+  </div>
+
+  <!-- TORCH BANNER -->
+  <div class="parade-torch-banner">
+    <div class="parade-torch-flame">🕯️</div>
+    <div class="parade-torch-text"><strong>The Family Torch</strong><br>At the close of the parade, all nations gather on stage and together light the flame — officially opening the June Extravaganza 2026.</div>
+  </div>
+
+  <!-- WORKSHOP BANNER -->
+  <div class="parade-workshop">
+    <div class="parade-workshop-icon">💻</div>
+    <div class="parade-workshop-text"><strong>Prep Workshops via WhatsApp</strong> — We'll hold sessions before June 21 to help everyone prepare their representation. Dates TBD — watch for the invite.</div>
+  </div>
+
+  <!-- SEARCH + GRID -->
+  <div class="nation-search-wrap">
+    <input class="nation-search" type="text" placeholder="🔍  Search countries..." oninput="filterNations(this.value)" />
+  </div>
+  <div id="nations-container"></div>
+
+  <!-- IDEAS SECTION -->
+  <div class="parade-ideas-wrap" id="parade-ideas">
+    <div class="parade-ideas-title">💡 How to Represent Your Nation</div>
+    <div class="parade-ideas-sub">Go as simple or as spectacular as you want. Every level of effort is welcome — what matters is showing up with pride.</div>
+
+    <div class="parade-idea-card">
+      <div class="parade-idea-header">
+        <div class="parade-idea-icon" style="background:#EDE9FE;">🎨</div>
+        <div class="parade-idea-label">Wear It</div>
+      </div>
+      <div class="parade-idea-items">
+        <div class="parade-idea-item">Wear your country's colors — jersey, t-shirt, scarf, or painted face</div>
+        <div class="parade-idea-item">Print or draw the flag and carry it as a banner or cape</div>
+        <div class="parade-idea-item">Make a paper flag on a stick — easy to do the morning of</div>
+        <div class="parade-idea-item">Traditional dress or a costume inspired by your country's culture</div>
+      </div>
+    </div>
+
+    <div class="parade-idea-card">
+      <div class="parade-idea-header">
+        <div class="parade-idea-icon" style="background:#FEF0E6;">🍽️</div>
+        <div class="parade-idea-label">Taste It</div>
+      </div>
+      <div class="parade-idea-items">
+        <div class="parade-idea-item">Bring a snack from your country to share with the crowd</div>
+        <div class="parade-idea-item">NYC has it all — find a food that represents your nation at a nearby deli or market</div>
+        <div class="parade-idea-item">Even a candy bar, a drink, or a fruit can represent a culture</div>
+        <div class="parade-idea-item">Announce what you brought as you walk in — make it part of the moment</div>
+      </div>
+    </div>
+
+    <div class="parade-idea-card">
+      <div class="parade-idea-header">
+        <div class="parade-idea-icon" style="background:#E6F4EC;">🗣️</div>
+        <div class="parade-idea-label">Say It</div>
+      </div>
+      <div class="parade-idea-items">
+        <div class="parade-idea-item">Learn to say "hello" in your country's language and greet the crowd</div>
+        <div class="parade-idea-item">Share one wild or surprising fact about your nation</div>
+        <div class="parade-idea-item">Teach everyone a chant, a word, or a phrase they'll remember</div>
+        <div class="parade-idea-item">Tell us why you picked this country — make it personal</div>
+      </div>
+    </div>
+
+    <div class="parade-idea-card">
+      <div class="parade-idea-header">
+        <div class="parade-idea-icon" style="background:#E3F0FF;">🎵</div>
+        <div class="parade-idea-label">Play It</div>
+      </div>
+      <div class="parade-idea-items">
+        <div class="parade-idea-item">Walk in to your country's national anthem or a famous song from that culture</div>
+        <div class="parade-idea-item">Pull it up on your phone — 30 seconds is enough to set the mood</div>
+        <div class="parade-idea-item">Teach the crowd a clap, a stomp, or a rhythm from your country</div>
+        <div class="parade-idea-item">Hum it, sing it, beatbox it — any version counts</div>
+      </div>
+    </div>
+
+    <div class="parade-idea-card" style="border-color: var(--gold);">
+      <div class="parade-idea-header">
+        <div class="parade-idea-icon" style="background: var(--gold-light);">✨</div>
+        <div class="parade-idea-label" style="color: var(--gold-dark);">Go Big</div>
+      </div>
+      <div class="parade-idea-items">
+        <div class="parade-idea-item">Full traditional costume with multiple elements — flag, food, song, and a speech</div>
+        <div class="parade-idea-item">Build a prop or poster about your country to display on stage</div>
+        <div class="parade-idea-item">Choreograph an entrance — a walk, a dance move, a salute</div>
+        <div class="parade-idea-item">Quiz the crowd on a fact about your country before revealing the answer</div>
+      </div>
+      <div class="parade-idea-gobig">
+        <div class="parade-idea-gobig-label">Zoom Workshop Goals</div>
+        <div class="parade-idea-gobig-items">
+          <div class="parade-idea-gobig-item">Lock in your country and start gathering materials</div>
+          <div class="parade-idea-gobig-item">Practice your entrance and what you'll say</div>
+          <div class="parade-idea-gobig-item">Share ideas with cousins — inspire each other</div>
+          <div class="parade-idea-gobig-item">Arrive in NYC ready to represent</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- NATION DRAWER -->
+<div class="nation-drawer-overlay" id="nationOverlay" onclick="closeNationDrawer()"></div>
+<div class="nation-drawer" id="nationDrawer">
+  <div class="nation-drawer-topbar">
+    <div class="nation-drawer-handle"></div>
+    <button class="nation-drawer-close" onclick="closeNationDrawer()">&#x2715;</button>
+  </div>
+  <div id="nationDrawerContent"></div>
+</div>
+
 </div><!-- end app-body -->
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1414,6 +1624,9 @@ function switchTab(name) {
       if (!window.leafletMap) initLeafletMap();
       else { window.leafletMap.invalidateSize(); setMapFilter('all', document.querySelector('.map-filter-btn')); }
     }, 50);
+  }
+  if (name === 'nations') {
+    setTimeout(function() { buildNationsGrid(); }, 20);
   }
 }
 
@@ -1849,6 +2062,161 @@ function closeDrawer() {
 function handleOverlayClick(e) {
   if (e.target === document.getElementById('cell-drawer-overlay')) closeDrawer();
 }
+
+// ===== PICK YOUR NATION =====
+const HERITAGE = ['Norway','Germany','USA','Mexico','England'];
+const regionOrder = ['CONCACAF','CONMEBOL','CAF','AFC','UEFA','OFC'];
+const regionNames = {
+  'CONCACAF': '🌎 North & Central America',
+  'CONMEBOL': '🌎 South America',
+  'CAF': '🌍 Africa',
+  'AFC': '🌏 Asia',
+  'UEFA': '🌍 Europe',
+  'OFC': '🌊 Oceania'
+};
+
+const nations = [
+  { name:'USA', flag:'🇺🇸', code:'us', region:'CONCACAF', continent:'North America', funEmoji:'🗽', funFact:'Home to more theme parks than any country on Earth — and the world\'s largest economy.', sport:'American Football', hobbies:'Hiking, BBQ cookouts, basketball, road trips, baseball', food:'Burgers, hot dogs, apple pie, clam chowder', language:'English', deepDive:'The USA is competing in their first World Cup on home soil since 1994. The team has never won the tournament but they have a golden generation of talent including Christian Pulisic — one of the best players in the world.' },
+  { name:'Canada', flag:'🇨🇦', code:'ca', region:'CONCACAF', continent:'North America', funEmoji:'🍁', funFact:'Canada has more lakes than every other country combined — over 2 million of them!', sport:'Ice Hockey', hobbies:'Ice skating, skiing, kayaking, curling, lacrosse', food:'Poutine, maple syrup, butter tarts, tourtière', language:'English & French', deepDive:'Canada is a co-host of this World Cup and it\'s their first time ever qualifying for the tournament. An incredible moment for Canadian soccer.' },
+  { name:'Mexico', flag:'🇲🇽', code:'mx', region:'CONCACAF', continent:'North America', funEmoji:'🌮', funFact:'Mexico is one of the world\'s top 5 most biodiverse countries, home to jaguars, axolotls, and over 1,000 bird species.', sport:'Football (Soccer)', hobbies:'Lucha libre wrestling, charreada rodeo, dancing, cooking', food:'Tacos, mole, tamales, chiles en nogada', language:'Spanish', deepDive:'Mexico is the most successful CONCACAF nation in World Cup history. Their passionate fans — famous for the "El Tri" chant — fill stadiums with incredible energy.' },
+  { name:'Curaçao', flag:'🇨🇼', code:'cw', region:'CONCACAF', continent:'Caribbean', funEmoji:'🏝️', funFact:'Curaçao is the smallest nation ever to qualify for the FIFA World Cup!', sport:'Football (Soccer)', hobbies:'Diving, snorkeling, kitesurfing, beach volleyball', food:'Keshi yená (stuffed cheese), funchi, stobá stew', language:'Papiamentu, Dutch & English', deepDive:'This tiny Caribbean island of just 150,000 people made history by qualifying for their first-ever World Cup. A true underdog story — the whole island is celebrating.' },
+  { name:'Haiti', flag:'🇭🇹', code:'ht', region:'CONCACAF', continent:'Caribbean', funEmoji:'🎨', funFact:'Haiti is famous for its vibrant, colorful art — Haitian paintings are collected in museums around the world.', sport:'Football (Soccer)', hobbies:'Music (kompa), painting, dancing, dominoes', food:'Griot (fried pork), rice and beans, pikliz spicy slaw', language:'Haitian Creole & French', deepDive:'Haiti\'s only other World Cup was in 1974. This return is deeply emotional for the island nation. Their supporters are among the most passionate in the world.' },
+  { name:'Panama', flag:'🇵🇦', code:'pa', region:'CONCACAF', continent:'Central America', funEmoji:'🚢', funFact:'The Panama Canal connects two oceans and is one of the greatest engineering feats in human history.', sport:'Baseball', hobbies:'Baseball, surfing, diving, cumbia dancing', food:'Sancocho soup, ceviche, patacones, ropa vieja', language:'Spanish', deepDive:'Panama qualified despite being a small nation of just 4 million people. They play with incredible heart and are known for their tough, physical style of football.' },
+  { name:'Argentina', flag:'🇦🇷', code:'ar', region:'CONMEBOL', continent:'South America', funEmoji:'🏆', funFact:'Argentina is the defending World Cup champion, led by the greatest player of all time — Lionel Messi.', sport:'Football (Soccer)', hobbies:'Tango dancing, polo, mate tea drinking, asado BBQ', food:'Asado, empanadas, medialunas, dulce de leche', language:'Spanish', deepDive:'Argentina won the 2022 World Cup in the most dramatic final in history. Messi, now in his 40s, is likely playing his last World Cup. Can they become the first back-to-back champions since Brazil in 1962?' },
+  { name:'Brazil', flag:'🇧🇷', code:'br', region:'CONMEBOL', continent:'South America', funEmoji:'🌴', funFact:'Brazil has won the World Cup 5 times — more than any other country in the world.', sport:'Football (Soccer)', hobbies:'Capoeira martial art, Carnival dancing, beach volleyball, surfing', food:'Feijoada stew, pão de queijo, brigadeiro, açaí', language:'Portuguese', deepDive:'Brazil is the only country to have participated in every single World Cup. Their jogo bonito (beautiful game) style is famous worldwide. They last won in 2002 and are desperate to end that drought.' },
+  { name:'Colombia', flag:'🇨🇴', code:'co', region:'CONMEBOL', continent:'South America', funEmoji:'☕', funFact:'Colombia produces some of the world\'s most famous coffee — and has incredible biodiversity.', sport:'Football (Soccer)', hobbies:'Vallenato music, cycling, salsa dancing, tejo', food:'Bandeja paisa, arepas, sancocho, ajiaco', language:'Spanish', deepDive:'Colombia has never made it past the quarter-finals but they always play exciting, attack-minded football. Their fans bring incredible music and colour to every stadium.' },
+  { name:'Ecuador', flag:'🇪🇨', code:'ec', region:'CONMEBOL', continent:'South America', funEmoji:'🐢', funFact:'Ecuador is home to the Galápagos Islands — where Charles Darwin developed his theory of evolution.', sport:'Football (Soccer)', hobbies:'Chaza ball, cycling, hiking the Andes, artisan crafts', food:'Ceviche, llapingachos, seco de pollo, canelazo', language:'Spanish', deepDive:'Ecuador plays one of the matches you\'ll be attending! They face Germany on June 22 at MetLife. They\'re known for their energetic, high-press style of play.' },
+  { name:'Uruguay', flag:'🇺🇾', code:'uy', region:'CONMEBOL', continent:'South America', funEmoji:'🥩', funFact:'Uruguay was the first-ever FIFA World Cup champion, winning the inaugural tournament in 1930 on home soil.', sport:'Football (Soccer)', hobbies:'Asado BBQ, candombe drumming, horse racing, mate', food:'Asado, chivito sandwich, milanesa, alfajores', language:'Spanish', deepDive:'Don\'t be fooled by their small population of 3.5 million — Uruguay punches WAY above its weight in football. They\'ve won two World Cups and are always dangerous.' },
+  { name:'Paraguay', flag:'🇵🇾', code:'py', region:'CONMEBOL', continent:'South America', funEmoji:'🎸', funFact:'Paraguay is the only country in the world with a bilingual national anthem — sung in both Spanish and Guaraní.', sport:'Football (Soccer)', hobbies:'Ñandutí lacemaking, harp music, fishing, arandu', food:'Sopa paraguaya, chipa, asado', language:'Spanish & Guaraní', deepDive:'Paraguay is famous for their incredibly strong defensive record in World Cups — they once went 5 matches without conceding a goal. Hard to beat.' },
+  { name:'Bolivia', flag:'🇧🇴', code:'bo', region:'CONMEBOL', continent:'South America', funEmoji:'🏔️', funFact:'Bolivia has two capital cities — and their home stadium is so high in the mountains that visitors get altitude sickness!', sport:'Football (Soccer)', hobbies:'Cholita wrestling, weaving textiles, Diablada dance', food:'Salteñas, fricasé pork stew, api drink', language:'Spanish + 36 indigenous languages', deepDive:'Bolivia qualified through the intercontinental playoffs. They play their home games at 3,600m above sea level — making them notoriously difficult to beat at home.' },
+  { name:'Venezuela', flag:'🇻🇪', code:'ve', region:'CONMEBOL', continent:'South America', funEmoji:'⚾', funFact:'Venezuela has sent more players to Major League Baseball than any country outside the USA and Dominican Republic.', sport:'Baseball', hobbies:'Baseball, joropo dance, hammock-making, beach sports', food:'Arepas, pabellón criollo, cachapas, hallacas', language:'Spanish', deepDive:'Venezuela\'s football program has improved dramatically and they have exciting young talent ready to show the world.' },
+  { name:'Algeria', flag:'🇩🇿', code:'dz', region:'CAF', continent:'Africa', funEmoji:'🏜️', funFact:'Algeria contains about 80% of the Sahara Desert — the largest hot desert on Earth.', sport:'Football (Soccer)', hobbies:'Rai music, chess, traditional wrestling, horse riding', food:'Couscous, tajine, merguez, chakhchoukha', language:'Arabic & Berber', deepDive:'Algeria won the Africa Cup of Nations in 2019 with spectacular football. Their passionate fans — known as Les Fennecs — are among the most vocal in the world.' },
+  { name:'Cape Verde', flag:'🇨🇻', code:'cv', region:'CAF', continent:'Africa', funEmoji:'🎵', funFact:'Cape Verde is a tiny Atlantic island nation famous for birthing morna music — listed on UNESCO\'s Cultural Heritage.', sport:'Football (Soccer)', hobbies:'Morna and coladeira music, fishing, beach sports', food:'Cachupa stew, grogue spirit, pastel com diabo dentro', language:'Portuguese & Cape Verdean Creole', deepDive:'These small islands of just 500,000 people have risen to become a serious African football nation. Their Blue Sharks play with energy and hunger.' },
+  { name:'Egypt', flag:'🇪🇬', code:'eg', region:'CAF', continent:'Africa', funEmoji:'🛸', funFact:'Egypt is home to the only one of the Seven Wonders of the Ancient World still standing — the Great Pyramid of Giza.', sport:'Football (Soccer)', hobbies:'Backgammon, dabke dance, falconry, Nile cruising', food:'Koshari, ful medames, ta\'ameya, molokhia', language:'Arabic', deepDive:'Egypt is the most successful nation in Africa Cup of Nations history with 7 titles. Mohamed Salah — one of the best players alive — leads this team.' },
+  { name:'Ghana', flag:'🇬🇭', code:'gh', region:'CAF', continent:'Africa', funEmoji:'🥁', funFact:'Ghana was the first sub-Saharan African country to qualify for the World Cup and came agonizingly close to a semi-final in 2010.', sport:'Football (Soccer)', hobbies:'Drumming, kente weaving, Azonto dance, oware board game', food:'Jollof rice, fufu, kelewele, waakye', language:'English (+ Twi, Hausa, and others)', deepDive:'Ghana came within a penalty kick of the World Cup semi-finals in 2010 — one of the most heartbreaking moments in World Cup history. They always play with pace and physicality.' },
+  { name:'Ivory Coast', flag:'🇨🇮', code:'ci', region:'CAF', continent:'Africa', funEmoji:'🍫', funFact:'Ivory Coast produces more cocoa beans than any other country — about 40% of the global supply.', sport:'Football (Soccer)', hobbies:'Zouglou dance, traditional mask ceremonies, djembe drumming', food:'Attiéké, sauce graine, aloko fried plantains', language:'French', deepDive:'Ivory Coast has had one of Africa\'s most talented generations ever. The current team carries that legacy and plays with incredible attacking flair.' },
+  { name:'Morocco', flag:'🇲🇦', code:'ma', region:'CAF', continent:'Africa', funEmoji:'🌟', funFact:'Morocco reached the semi-finals of the 2022 World Cup — the best-ever finish for an African or Arab nation.', sport:'Football (Soccer)', hobbies:'Gnawa music, fantasia horse riding, hammam baths, zellige tilework', food:'Tagine, couscous, pastilla, mint tea', language:'Arabic, Berber & French', deepDive:'Morocco\'s 2022 semi-final run was one of the greatest stories in World Cup history. They beat Spain and Portugal along the way! Their Atlas Lions are one of the most exciting teams to watch.' },
+  { name:'Senegal', flag:'🇸🇳', code:'sn', region:'CAF', continent:'Africa', funEmoji:'🦁', funFact:'Senegal is the reigning Africa Cup of Nations champion and has the best player in Africa — Sadio Mané.', sport:'Laamb Wrestling', hobbies:'Laamb traditional wrestling, sabar drumming, teranga hospitality culture', food:'Thieboudienne fish rice, yassa chicken, mafé', language:'French & Wolof', deepDive:'Senegal reached the quarter-finals in 2002 and are one of Africa\'s most consistent teams. Their teranga (hospitality) culture makes them everyone\'s second favourite team.' },
+  { name:'South Africa', flag:'🇿🇦', code:'za', region:'CAF', continent:'Africa', funEmoji:'🦏', funFact:'South Africa hosted the 2010 World Cup — the first ever held on the African continent — and invented the vuvuzela.', sport:'Rugby Union', hobbies:'Safari, braai BBQ, surfing, Cape Winelands visits', food:'Biltong, bobotie, boerewors, pap', language:'11 official languages including Zulu, Xhosa & Afrikaans', deepDive:'Bafana Bafana are playing in their first World Cup since they hosted in 2010. The whole continent will be behind them.' },
+  { name:'Tunisia', flag:'🇹🇳', code:'tn', region:'CAF', continent:'Africa', funEmoji:'🏺', funFact:'Tunisia is home to the ancient ruins of Carthage — once one of the most powerful cities in the world.', sport:'Football (Soccer)', hobbies:'Pottery, olive harvesting, maluf music, horse racing', food:'Harissa, brik pastry, couscous, lablabi chickpea soup', language:'Arabic', deepDive:'Tunisia are known as The Eagles of Carthage. They were the first African team to win a World Cup match back in 1978 and have been regular qualifiers ever since.' },
+  { name:'DR Congo', flag:'🇨🇩', code:'cd', region:'CAF', continent:'Africa', funEmoji:'🦍', funFact:'DR Congo\'s Congo Basin is the world\'s second largest rainforest — the "lungs of Africa".', sport:'Football (Soccer)', hobbies:'Soukous and rumba music, djembe drumming, fishing', food:'Poulet à la moambe, fufu, saka-saka', language:'French (+ Lingala, Swahili and others)', deepDive:'DR Congo qualified through the intercontinental playoffs — their first World Cup since 1974. They have a proud footballing tradition and incredible raw talent.' },
+  { name:'Australia', flag:'🇦🇺', code:'au', region:'AFC', continent:'Oceania', funEmoji:'🦘', funFact:'Australia has more venomous creatures than anywhere on Earth — and the world\'s largest cattle station (bigger than Belgium!).', sport:'Australian Rules Football', hobbies:'Surfing, cricket, BBQ (called "barbie"), beach life', food:'Meat pie, Tim Tams, Vegemite on toast, lamingtons', language:'English', deepDive:'The Socceroos reached the quarter-finals in 2006 and the round of 16 in 2022. They\'re always a hardworking, direct team with a point to prove.' },
+  { name:'Iran', flag:'🇮🇷', code:'ir', region:'AFC', continent:'Asia', funEmoji:'🏛️', funFact:'Iran (ancient Persia) is one of the oldest civilizations on Earth — over 7,000 years of continuous history.', sport:'Football (Soccer) & Wrestling', hobbies:'Backgammon, Persian poetry, bazaar shopping, skiing', food:'Ghormeh sabzi, kebab, saffron rice, tahdig', language:'Persian (Farsi)', deepDive:'Iran is the most successful team in Asian football history, having qualified for the World Cup more times than any other Asian nation.' },
+  { name:'Japan', flag:'🇯🇵', code:'jp', region:'AFC', continent:'Asia', funEmoji:'🗻', funFact:'Japan was the FIRST country to qualify for the 2026 World Cup — and they always clean up the stadium after their games!', sport:'Baseball & Sumo', hobbies:'Manga reading, karaoke, origami, martial arts, gaming', food:'Sushi, ramen, tempura, takoyaki, mochi', language:'Japanese', deepDive:'Japan knocked Germany and Spain out in 2022 and their players are now stars in Europe\'s top leagues. The Samurai Blue are one of Asia\'s most exciting teams.' },
+  { name:'Jordan', flag:'🇯🇴', code:'jo', region:'AFC', continent:'Asia', funEmoji:'🌹', funFact:'Jordan is home to the ancient rock-carved city of Petra — one of the New Seven Wonders of the World.', sport:'Football (Soccer)', hobbies:'Horse riding, Dead Sea swimming, falconry, chess', food:'Mansaf (lamb in yoghurt sauce), maqluba, knafeh, falafel', language:'Arabic', deepDive:'Jordan is making their first-ever World Cup appearance — a massive achievement for this small nation. A historic moment for Jordanian football.' },
+  { name:'Qatar', flag:'🇶🇦', code:'qa', region:'AFC', continent:'Asia', funEmoji:'🌅', funFact:'Qatar hosted the 2022 World Cup and is the richest country per capita in the world.', sport:'Football (Soccer) & Camel Racing', hobbies:'Camel racing, falconry, pearl diving, dhow sailing', food:'Machboos spiced rice, harees, luqaimat, gahwa coffee', language:'Arabic', deepDive:'Qatar became the first host nation eliminated in the group stage in 2022. They\'ll be desperate to prove themselves as genuine competitors this time.' },
+  { name:'Saudi Arabia', flag:'🇸🇦', code:'sa', region:'AFC', continent:'Asia', funEmoji:'🌴', funFact:'Saudi Arabia pulled off one of the greatest World Cup upsets ever — beating Argentina 2-1 in the 2022 group stage!', sport:'Football (Soccer) & Falconry', hobbies:'Falconry, camel racing, dune bashing, traditional sword dances', food:'Kabsa rice dish, mandi slow-cooked lamb, mutabbaq', language:'Arabic', deepDive:'That 2022 win over Argentina (the eventual champions!) was one of the greatest shocks in World Cup history. Saudi Arabia has been investing heavily in football.' },
+  { name:'South Korea', flag:'🇰🇷', code:'kr', region:'AFC', continent:'Asia', funEmoji:'🏆', funFact:'South Korea co-hosted the 2002 World Cup and reached the semi-finals — the best result ever for an Asian team.', sport:'Taekwondo & Baseball', hobbies:'K-pop, gaming (esports), hiking, badminton', food:'Kimchi, bibimbap, Korean BBQ, tteokbokki, ramyeon', language:'Korean', deepDive:'South Korea beat Spain, Italy and Germany on their way to the 2002 semi-finals! Son Heung-min leads the current team as they look to recreate that magic.' },
+  { name:'Uzbekistan', flag:'🇺🇿', code:'uz', region:'AFC', continent:'Asia', funEmoji:'🕌', funFact:'Uzbekistan is home to Samarkand — one of the most beautiful ancient cities on the Silk Road trading route.', sport:'Football (Soccer) & Wrestling', hobbies:'Silk weaving, plov cooking festivals, kurash wrestling, chess', food:'Plov (rice dish), samsa, shashlik kebab, lagman noodles', language:'Uzbek', deepDive:'Making their first-ever World Cup appearance! Managed by Italian World Cup-winning captain Fabio Cannavaro. Their star Abdukodir Khusanov plays for Manchester City.' },
+  { name:'Iraq', flag:'🇮🇶', code:'iq', region:'AFC', continent:'Asia', funEmoji:'🏛️', funFact:'Iraq is home to ancient Mesopotamia — often called "the cradle of civilization," where writing was invented over 5,000 years ago.', sport:'Football (Soccer)', hobbies:'Mesopotamian chess, fishing, traditional music, qahwa coffee', food:'Masgouf grilled fish, kubba, tashreeb, kleicha cookies', language:'Arabic & Kurdish', deepDive:'Iraq\'s last World Cup was in 1986 — a 40-year gap! They qualified in dramatic fashion through the intercontinental playoffs. The whole country erupted in celebration.' },
+  { name:'England', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', code:'gb-eng', region:'UEFA', continent:'Europe', funEmoji:'☕', funFact:'England invented football (soccer) in the 1800s — and has been trying to win the World Cup ever since their only title in 1966.', sport:'Football (Soccer) & Cricket', hobbies:'Pub culture, cricket, gardening, Premier League watching', food:'Fish and chips, Sunday roast, beans on toast, Yorkshire pudding', language:'English', deepDive:'England invented the game but has only won it once (1966). Every tournament brings fresh hope — famously followed by heartbreak through penalty shootouts. With Bellingham, Kane and Foden, this might finally be their year.' },
+  { name:'France', flag:'🇫🇷', code:'fr', region:'UEFA', continent:'Europe', funEmoji:'🗼', funFact:'France is the most visited country in the world — over 100 million tourists a year.', sport:'Football (Soccer)', hobbies:'Cycling (Tour de France), boules, wine tasting, fashion', food:'Baguette, croissant, coq au vin, crème brûlée, cheese', language:'French', deepDive:'France won the World Cup in 1998 and 2018. Their squad is stacked with world-class talent and they always perform at major tournaments.' },
+  { name:'Germany', flag:'🇩🇪', code:'de', region:'UEFA', continent:'Europe', funEmoji:'🍺', funFact:'Germany has won the World Cup 4 times and has reached the final or semi-final in almost every tournament.', sport:'Football (Soccer)', hobbies:'Oktoberfest, hiking, Christmas markets, cycling', food:'Bratwurst, pretzels, schnitzel, sauerkraut, Black Forest cake', language:'German', deepDive:'You\'ll see Germany play on June 22 at MetLife! Ranked 3rd in the world with an incredibly exciting young team led by Florian Wirtz and Jamal Musiala. A team with history, talent, and real hunger to win.' },
+  { name:'Norway', flag:'🇳🇴', code:'no', region:'UEFA', continent:'Europe', funEmoji:'🌌', funFact:'Norway can see the Northern Lights in winter, and experiences the Midnight Sun in summer — 24 hours of daylight!', sport:'Cross-Country Skiing', hobbies:'Skiing, hiking, fjord kayaking, Northern Lights chasing, fishing', food:'Gravlaks salmon, lefse flatbread, brunost brown cheese, fårikål lamb', language:'Norwegian', deepDive:'Norway hasn\'t been to a World Cup since 1998 — a 28-year wait finally over! Led by Erling Haaland, who scored 16 goals in qualifying. One of the most dominant strikers on the planet. Everyone will be watching Norway.' },
+  { name:'Portugal', flag:'🇵🇹', code:'pt', region:'UEFA', continent:'Europe', funEmoji:'🐓', funFact:'Portugal is the oldest country in Europe with unchanged borders — established in 1139. Ronaldo holds the record for most international goals ever.', sport:'Football (Soccer)', hobbies:'Surfing, fado music, tile painting (azulejo), cork crafts', food:'Pastel de nata, bacalhau cod, piri-piri chicken, bifana', language:'Portuguese', deepDive:'You\'ll see Portugal play on June 24 at MetLife! Cristiano Ronaldo is likely in his final World Cup. Can he finally win the one trophy that has escaped him?' },
+  { name:'Spain', flag:'🇪🇸', code:'es', region:'UEFA', continent:'Europe', funEmoji:'💃', funFact:'Spain won the World Cup in 2010 and dominated world football for over a decade, winning Euro 2024 too.', sport:'Football (Soccer)', hobbies:'Flamenco dancing, siesta culture, La Tomatina festival, tapas', food:'Paella, tapas, jamón, tortilla española, churros', language:'Spanish (Castilian)', deepDive:'Spain won Euro 2024 in spectacular fashion with the youngest team in the tournament. They have an extraordinary group of young talents led by Lamine Yamal and Pedri.' },
+  { name:'Netherlands', flag:'🇳🇱', code:'nl', region:'UEFA', continent:'Europe', funEmoji:'🌷', funFact:'The Netherlands has 23 million bicycles for 17 million people — more bikes than people!', sport:'Football (Soccer) & Cycling', hobbies:'Cycling, tulip growing, ice skating, Sinterklaas traditions', food:'Stroopwafel, herring, Dutch pancakes, bitterballen, gouda cheese', language:'Dutch', deepDive:'The Dutch — known as the Oranje — have never won a World Cup despite reaching the final three times! They play an attractive, direct style.' },
+  { name:'Croatia', flag:'🇭🇷', code:'hr', region:'UEFA', continent:'Europe', funEmoji:'🏝️', funFact:'Croatia is famous for having over 1,000 islands along its stunning Adriatic coastline.', sport:'Football (Soccer)', hobbies:'Klapa singing, sailing, picigin beach water sport, truffle hunting', food:'Peka slow-cooked meat, black risotto, burek', language:'Croatian', deepDive:'A tiny country of just 4 million that reached the World Cup final in 2018 and semi-final in 2022. Luka Modrić may be playing his last World Cup.' },
+  { name:'Switzerland', flag:'🇨🇭', code:'ch', region:'UEFA', continent:'Europe', funEmoji:'⌚', funFact:'Switzerland makes about 95% of the world\'s luxury watches and has been neutral in every war for over 200 years.', sport:'Football (Soccer) & Alpine Skiing', hobbies:'Skiing, yodeling, hiking, fondue making, watch collecting', food:'Fondue, raclette, rösti, Toblerone chocolate, Gruyère cheese', language:'German, French, Italian & Romansh', deepDive:'Switzerland consistently punches above their weight, regularly reaching the knockout rounds. They\'re incredibly well-organized tactically.' },
+  { name:'Scotland', flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', code:'gb-sct', region:'UEFA', continent:'Europe', funEmoji:'🏴', funFact:'Scotland actually invented golf! St Andrews, the "Home of Golf," has been played on since the 15th century.', sport:'Football (Soccer) & Golf', hobbies:'Highland Games, bagpipe music, ceilidh dancing, whisky distillery tours', food:'Haggis, cullen skink, deep-fried Mars bars, shortbread', language:'English & Scottish Gaelic', deepDive:'Scotland were back at the Euros in 2024 and now make their first World Cup since 1998. Their Tartan Army fans are famous for being the friendliest supporters in the world.' },
+  { name:'Austria', flag:'🇦🇹', code:'at', region:'UEFA', continent:'Europe', funEmoji:'🎻', funFact:'Austria is the birthplace of Mozart and has more opera houses per capita than any country in the world.', sport:'Alpine Skiing', hobbies:'Skiing, Mozart concerts, café culture, mountain hiking, lederhosen festivals', food:'Wiener Schnitzel, sachertorte, apfelstrudel, kaiserschmarrn', language:'German', deepDive:'Austria reached the quarter-finals of Euro 2024 in a surprise run. They play an exciting, attacking style with a talented, hungry young squad.' },
+  { name:'Belgium', flag:'🇧🇪', code:'be', region:'UEFA', continent:'Europe', funEmoji:'🍫', funFact:'Belgium produces the finest chocolate in the world and has more Michelin-starred restaurants per capita than France!', sport:'Football (Soccer) & Cycling', hobbies:'Beer tasting (500+ types!), cycling, waffles, comic book collecting', food:'Belgian waffles, moules-frites, chocolate, speculoos, carbonade flamande', language:'Dutch, French & German', deepDive:'Belgium\'s "Golden Generation" reached the World Cup semi-final in 2018. De Bruyne is one of the best players in the world and leads a new generation stepping up.' },
+  { name:'Bosnia & Herzegovina', flag:'🇧🇦', code:'ba', region:'UEFA', continent:'Europe', funEmoji:'🌉', funFact:'Sarajevo hosted the 1984 Winter Olympics and is famous for the Stari Most bridge — a UNESCO World Heritage Site.', sport:'Football (Soccer)', hobbies:'Sevdalinka folk music, rafting on the Neretva, traditional coffee culture', food:'Ćevapi (grilled meat), burek, bosanski lonac stew, baklava', language:'Bosnian, Croatian & Serbian', deepDive:'Bosnia knocked out Italy in the UEFA playoffs — a massive upset! Their football team represents pride and joy for the whole nation. They play with heart and physicality.' },
+  { name:'Sweden', flag:'🇸🇪', code:'se', region:'UEFA', continent:'Europe', funEmoji:'🌲', funFact:'Sweden has more islands than any country in Europe — over 220,000 — and the sun barely sets in summer.', sport:'Ice Hockey', hobbies:'ABBA, IKEA flat-pack building, midsommar festivals, fika coffee breaks', food:'Meatballs (köttbullar), gravlax, surströmming, cinnamon buns', language:'Swedish', deepDive:'Sweden beat Poland 3-2 in a thrilling playoff to qualify. They\'re always hard-working, physical, and difficult to beat.' },
+  { name:'Türkiye', flag:'🇹🇷', code:'tr', region:'UEFA', continent:'Europe/Asia', funEmoji:'🕌', funFact:'Istanbul is the only city in the world that spans two continents — Europe and Asia.', sport:'Football (Soccer) & Oil Wrestling', hobbies:'Turkish oil wrestling, bazaar shopping, Turkish baths (hammam), backgammon', food:'Kebab, baklava, Turkish delight, börek, dolma', language:'Turkish', deepDive:'Turkey reached the semi-finals of Euro 2024 and are in red-hot form. They play exciting, technically gifted football with incredibly passionate fans.' },
+  { name:'Czechia', flag:'🇨🇿', code:'cz', region:'UEFA', continent:'Europe', funEmoji:'🍺', funFact:'Czech Republic drinks more beer per person than any other country in the world.', sport:'Ice Hockey & Football', hobbies:'Mushroom foraging, hiking, beer garden culture, Bohemian glass crafts', food:'Svíčková beef sirloin, goulash, trdelník pastry, pickled cheese', language:'Czech', deepDive:'Czechia knocked out Denmark — ranked 20 places above them — on penalties in the UEFA playoffs. Always organized, technically solid, making the most of limited resources.' },
+  { name:'New Caledonia', flag:'🇳🇨', code:'nc', region:'OFC', continent:'Oceania', funEmoji:'🐠', funFact:'New Caledonia is a French Pacific island territory home to one of the world\'s largest lagoons — a UNESCO World Heritage Site.', sport:'Football (Soccer)', hobbies:'Outrigger canoe racing, spearfishing, kanak traditional ceremonies', food:'Bougna (taro and chicken in banana leaves), coconut crab, French pastries', language:'French & 30 Kanak languages', deepDive:'Making their FIRST-EVER World Cup appearance! A tiny French island territory in the Pacific with just 270,000 people. This is a miracle for their small football federation.' },
+];
+
+function buildNationsGrid(filter) {
+  const container = document.getElementById('nations-container');
+  container.innerHTML = '';
+  const filtered = filter ? nations.filter(n => n.name.toLowerCase().includes(filter.toLowerCase())) : nations;
+  if (filter) {
+    const grid = document.createElement('div');
+    grid.className = 'nation-grid';
+    grid.style.paddingTop = '12px';
+    filtered.forEach(n => grid.appendChild(makeNationCard(n)));
+    container.appendChild(grid);
+  } else {
+    regionOrder.forEach(region => {
+      const regionNations = filtered.filter(n => n.region === region);
+      if (!regionNations.length) return;
+      const label = document.createElement('div');
+      label.className = 'region-label';
+      label.textContent = regionNames[region];
+      container.appendChild(label);
+      const grid = document.createElement('div');
+      grid.className = 'nation-grid';
+      regionNations.forEach(n => grid.appendChild(makeNationCard(n)));
+      container.appendChild(grid);
+    });
+  }
+}
+
+function makeNationCard(n) {
+  const isHeritage = HERITAGE.includes(n.name);
+  const card = document.createElement('div');
+  card.className = 'nation-card' + (isHeritage ? ' heritage' : '');
+  card.onclick = () => openNationDrawer(n);
+  card.innerHTML =
+    (isHeritage ? '<div class="heritage-ribbon">★ Family</div>' : '') +
+    '<img class="nation-flag-img" src="https://flagcdn.com/w80/' + n.code + '.png" alt="Flag of ' + n.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';" />' +
+    '<span class="nation-flag-emoji-fallback" style="display:none;">' + n.flag + '</span>' +
+    '<div class="nation-name">' + n.name + '</div>';
+  return card;
+}
+
+function filterNations(val) { buildNationsGrid(val.trim()); }
+
+function openNationDrawer(n) {
+  const isHeritage = HERITAGE.includes(n.name);
+  document.getElementById('nationDrawerContent').innerHTML =
+    '<div style="position:relative;">' +
+      '<img src="https://flagcdn.com/w640/' + n.code + '.png" alt="Flag of ' + n.name + '" class="nation-flag-hero" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';" />' +
+      '<div class="nation-flag-hero-fallback" style="display:none;">' + n.flag + '</div>' +
+    '</div>' +
+    '<div class="nation-drawer-info">' +
+      '<div class="nation-drawer-name">' + n.flag + ' ' + n.name + '</div>' +
+      '<div class="nation-drawer-sub">' + n.continent + ' · ' + n.region + '</div>' +
+      (isHeritage ? '<div class="nation-heritage-badge">★ Family Heritage Country</div>' : '') +
+    '</div>' +
+    '<div class="nation-fun-fact"><span class="nation-fun-fact-emoji">' + n.funEmoji + '</span>' + n.funFact + '</div>' +
+    '<div class="nation-info-rows">' +
+      '<div class="nation-info-row"><div class="nation-info-icon">⚽</div><div><div class="nation-info-label">National Sport</div><div class="nation-info-value">' + n.sport + '</div></div></div>' +
+      '<div class="nation-info-row"><div class="nation-info-icon">🎨</div><div><div class="nation-info-label">Cultural Hobbies & Traditions</div><div class="nation-info-value">' + n.hobbies + '</div></div></div>' +
+      '<div class="nation-info-row"><div class="nation-info-icon">🍽️</div><div><div class="nation-info-label">Famous Foods</div><div class="nation-info-value">' + n.food + '</div></div></div>' +
+      '<div class="nation-info-row"><div class="nation-info-icon">🗣️</div><div><div class="nation-info-label">Language</div><div class="nation-info-value">' + n.language + '</div></div></div>' +
+    '</div>' +
+    '<div class="nation-deep-wrap"><div class="nation-deep-label">⚽ World Cup Story</div><div class="nation-deep-dive">' + n.deepDive + '</div></div>' +
+    '<div style="height:32px;"></div>';
+  document.getElementById('nationDrawer').classList.add('open');
+  document.getElementById('nationOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeNationDrawer() {
+  document.getElementById('nationDrawer').classList.remove('open');
+  document.getElementById('nationOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// swipe down to close nation drawer
+(function() {
+  const drawer = document.getElementById('nationDrawer');
+  let startY = 0;
+  drawer.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+  drawer.addEventListener('touchend', e => { if (e.changedTouches[0].clientY - startY > 60) closeNationDrawer(); }, { passive: true });
+})();
+
+
+
+// Safety net: if nations tab is somehow active on load, build it
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById('panel-nations').classList.contains('active')) {
+    buildNationsGrid();
+  }
+});
 </script>
 </body>
 </html>
