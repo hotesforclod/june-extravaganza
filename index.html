@@ -679,8 +679,11 @@ body {
           <td><div class="grid-cell"><div class="gc-item gc-event" onclick="openDrawer('mon22-morning')"><div class="gc-title">Lions of Teranga</div><div class="gc-sub">Little Senegal, Harlem</div></div></div></td>
           <td><div class="grid-cell-empty">Open</div></td>
           <td><div class="grid-cell"><div class="gc-item gc-kids" onclick="openDrawer('wed24-morning-stash')"><div class="gc-time">11:00 AM</div><div class="gc-title">Squad Stash Surprise</div><div class="gc-sub">Marking Moments</div></div></div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-event" onclick="openDrawer('thu25-morning')"><div class="gc-title">Ravilethe Bhakshanam</div><div class="gc-sub">Rashmi hosts breakfast</div></div></div></td>
-          <td><div class="grid-cell"><div class="gc-item gc-kids" onclick="openDrawer('fri26-morning-bday')"><div class="gc-time">11:00 AM</div><div class="gc-title">Ksana's Birthday Party 🎂</div></div></div></td>
+          <td><div class="grid-cell-empty">Open</div></td>
+          <td><div class="grid-cell">
+            <div class="gc-item gc-event" onclick="openDrawer('fri26-morning-school')"><div class="gc-time">8:30 AM</div><div class="gc-title">Ksana's Last Day of School</div><div class="gc-sub">Midtown West · 328 W 48th St</div></div>
+            <div class="gc-item gc-event" onclick="openDrawer('fri26-morning-breakfast')"><div class="gc-time">9:30 AM</div><div class="gc-title">Ravilethe Bhakshanam</div><div class="gc-sub">Rashmi hosts breakfast</div></div>
+          </div></td>
           <td><div class="grid-cell"><div class="gc-item gc-neutral" onclick="openDrawer('sat27-morning')"><div class="gc-title">Departures</div><div class="gc-sub">AM travel</div></div></div></td>
         </tr>
         <tr>
@@ -959,19 +962,12 @@ body {
           <div class="day-date-box"><div class="day-date-num">25</div><div class="day-date-dow">Thu</div></div>
           <div class="day-info">
             <div class="day-title">Ecuador vs Germany</div>
-            <div class="day-badges"><span class="badge badge-match">⚽ Kickoff 4:00 PM</span><span class="badge badge-general">Indian Breakfast</span></div>
+            <div class="day-badges"><span class="badge badge-match">⚽ Kickoff 4:00 PM</span></div>
           </div>
         </div>
         <div class="chevron">›</div>
       </div>
       <div class="day-body">
-        <div class="time-block">
-          <div class="time-label">Morning</div>
-          <div class="time-content">
-            <div class="time-content-title">Ravilethe Bhakshanam</div>
-            <div class="time-content-desc">Rashmi hosts Indian breakfast for the group.</div>
-          </div>
-        </div>
         <div class="time-block time-block-match">
           <div class="time-label">1:00 PM</div>
           <div class="time-content">
@@ -988,18 +984,26 @@ body {
         <div class="day-left">
           <div class="day-date-box"><div class="day-date-num">26</div><div class="day-date-dow">Fri</div></div>
           <div class="day-info">
-            <div class="day-title">Ksana's Birthday · Closing Ceremonies · Broadway</div>
-            <div class="day-badges"><span class="badge badge-kids">🎂 Kids</span><span class="badge badge-event">✦ Broadway</span><span class="badge badge-general">Final Night</span></div>
+            <div class="day-title">School Visit · Breakfast · Closing Ceremonies · Broadway</div>
+            <div class="day-badges"><span class="badge badge-event">🎓 School</span><span class="badge badge-event">✦ Broadway</span><span class="badge badge-general">Final Night</span></div>
           </div>
         </div>
         <div class="chevron">›</div>
       </div>
       <div class="day-body">
-        <div class="time-block time-block-kids">
-          <div class="time-label">11:00 AM</div>
+        <div class="time-block time-block-event">
+          <div class="time-label">8:30 AM</div>
           <div class="time-content">
-            <div class="time-content-title">Ksana's Birthday Party 🎂</div>
-            <div class="time-content-desc">Birthday celebration for Ksana. Kids event, 11:00 AM – 1:00 PM.</div>
+            <div class="time-content-title">Ksana's Last Day of School</div>
+            <div class="time-content-loc">📍 Midtown West · 328 W 48th St</div>
+            <div class="time-content-desc">Ksana's end-of-year presentation. Visit Arushka's classroom.</div>
+          </div>
+        </div>
+        <div class="time-block time-block-event">
+          <div class="time-label">9:30 AM</div>
+          <div class="time-content">
+            <div class="time-content-title">Ravilethe Bhakshanam</div>
+            <div class="time-content-desc">Rashmi hosts a full Indian breakfast for the group. Ravilethe Bhakshanam = morning feast.</div>
           </div>
         </div>
         <div class="time-block time-block-event">
@@ -2229,14 +2233,23 @@ const drawerData = {
       { icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', label: 'England', value: 'Rank #4 · Stars: Kane, Bellingham, Foden' },
     ]
   },
-  'fri26-morning-bday': {
-    date: 'Friday, June 26 · 11:00 AM',
-    title: "Ksana's Birthday Party 🎂",
-    badge: { text: 'Kids', cls: 'drawer-badge-kids' },
+  'fri26-morning-school': {
+    date: 'Friday, June 26 · 8:30 AM',
+    title: "Ksana's Last Day of School",
+    badge: { text: 'Event', cls: 'drawer-badge-event' },
     rows: [
-      { icon: '🎂', label: 'Occasion', value: "Ksana's birthday celebration!" },
-      { icon: '⏰', label: 'Time', value: '11:00 AM – 1:00 PM' },
-      { icon: '⭐', label: 'Who', value: 'Kids event' },
+      { icon: '🎓', label: 'What', value: "Ksana's end-of-year presentation. A chance to see her work and visit Arushka's classroom." },
+      { icon: '📍', label: 'Location', value: 'Midtown West · 328 W 48th St' },
+      { icon: '⏰', label: 'Time', value: '8:30 AM' },
+    ]
+  },
+  'fri26-morning-breakfast': {
+    date: 'Friday, June 26 · 9:30 AM',
+    title: 'Ravilethe Bhakshanam',
+    badge: { text: 'Event', cls: 'drawer-badge-event' },
+    rows: [
+      { icon: '🍳', label: 'What', value: 'Rashmi hosts a full Indian breakfast for the group. Ravilethe Bhakshanam = morning feast.' },
+      { icon: '⏰', label: 'Time', value: '9:30 AM' },
     ]
   },
   'fri26-eve-broadway': {
